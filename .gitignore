@@ -11,7 +11,7 @@
 /enonce/
 ###< symfony/framework-bundle ###
 #requirements
-composer req maker-bundle
-composer req twig
-composer req asset
-composer req doctrine
+#composer req maker-bundle
+#composer req twig
+#composer req asset
+#composer req doctrine
