@@ -4,6 +4,7 @@ namespace services;
 
 public class textTool
 {
+/*
     : voidpublic function shortDescription (int $limit => 30, $objet){
         $chaine = $objet->getDescription(); //obtenir la description pour cet objet
         if(strlen($chaine)>$limit){ //dans le cas où la longueur dépasser la limite
@@ -13,5 +14,7 @@ public class textTool
         $objet->setDescription($chaine); //on modifie l'objet virtuel
         return $objet;
     }
+    */
+
 
 }

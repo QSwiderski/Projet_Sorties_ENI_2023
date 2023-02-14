@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouvel evenement- {{ parent() }}{% endblock %}
+{% block title %}Nouvel evenement - {{ parent() }}{% endblock %}
 
 {% block body %}
+    <h2>Nouvel evenement</h2>
     {{ form_start(form) }}
     {{ form_widget(form) }}
     <button>Ajouter</button>
