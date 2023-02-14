@@ -17,8 +17,18 @@ class EventController extends AbstractController
     ): Response
     {
         $event = $evRepo->findOneBy(['id'=>$id]);
-        return $this->render('event/index.html.twig', [
+        return $this->render('event/unique.html.twig', [
             'event'=>$event
+        ]);
+    }
+
+    #[Route('/new', name: '_create')]
+    public function create(
+        int $id,
+        EventRepository $evRepo
+    ): Response
+    {
+        return $this->render('event/unique.html.twig', [
         ]);
     }
 }
