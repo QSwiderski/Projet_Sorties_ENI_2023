@@ -58,7 +58,7 @@ class EventController extends AbstractController
         }
         $this->addFlash('great_success','Panier ! Un souhaite de plus dans le Seau');
         */
-        return $this->render('wish/create.html.twig', [
+        return $this->render('event/create.html.twig', [
             'form' => $form
         ]
         );

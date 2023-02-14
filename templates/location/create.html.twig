@@ -1,7 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouveau site ecole- {{ Parent() }}{% endblock %}
+{% block title %}Nouveau Lieu de Sortie - {{ parent() }}{% endblock %}
 
 {% block body %}
-
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button>Ajouter</button>
+    {{ form_end(form) }}
 {% endblock %}

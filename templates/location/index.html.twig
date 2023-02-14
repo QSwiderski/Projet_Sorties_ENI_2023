@@ -1,6 +1,30 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Sites ecoles - {{ Parent() }}{% endblock %}
+{% block title %}Lieux de Sortie - {{ parent() }}{% endblock %}
 
 {% block body %}
+    <div class="container">
+        <h2>Lieux de sortie :</h2>
+        <table style="overflow: auto; height:500px">
+            <tr>
+                <th>nom</th>
+                <th>adresse</th>
+                <th>code postal</th>
+                <th>ville</th>
+                <th>latitude</th>
+                <th>longitude</th>
+            </tr>
+            {% for location in locations %}
+                <tr>
+                    {# <div class="{{ wish.category.iconame }}"></div> #}
+                    <td><a href="{{ path('location_showOne', {'id': location.id}) }}">{{ location.name }}</a></td>
+                    <td>{{ location.adress }}</td>
+                    <td>{{ location.postcode }}</td>
+                    <td>{{ location.city }}</td>
+                    <td>{{ location.latitude }}</td>
+                    <td>{{ location.longitude }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 {% endblock %}
