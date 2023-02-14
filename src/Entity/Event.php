@@ -45,6 +45,9 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     private ?Location $location = null;
 
+    #[ORM\Column]
+    private ?bool $isPublished = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -174,6 +177,18 @@ class Event
     public function setLocation(?Location $location): self
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    public function isIsPublished(): ?bool
+    {
+        return $this->isPublished;
+    }
+
+    public function setIsPublished(bool $isPublished): self
+    {
+        $this->isPublished = $isPublished;
 
         return $this;
     }
