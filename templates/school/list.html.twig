@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Gérer les sites</h2>
+    <div><a href={{ path('school_create')}}>Ajouter un site</a></div>
+    <h3>Filtrer les sites</h3>
+    <p>Le nom contient : <input type="text"><button>Rechercher</button> <br>
+    </p>
+
+    <p>Ville : </p>
+    {% for school in schools %}
+        <div>{{ school.name }}</div>
+        <div><a href={{ path('school_delete',{'id':school.id}) }}>Supprimer</a></div>
+        <div><a href={{ path('school_modify',{'id':school.id}) }}>Modifier</a></div>
+
+        <br>
+    {% endfor %}
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+

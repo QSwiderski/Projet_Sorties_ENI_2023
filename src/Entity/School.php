@@ -6,6 +6,7 @@ use App\Repository\SchoolRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SchoolRepository::class)]
 class School
@@ -14,6 +15,7 @@ class School
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
 
     #[ORM\Column(length: 30)]
     private ?string $name = null;
