@@ -9,6 +9,7 @@
 /var/
 /vendor/
 /enonce/
+/services/
 ###< symfony/framework-bundle ###
 #requirements
 #composer req maker-bundle

@@ -1,7 +1,36 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello EventController!{% endblock %}
+{% block title %}Evenements - {{ parent() }}{% endblock %}
 
 {% block body %}
-<h1> coucou </h1>
+
+    <div class="container">
+        <h2>Evenements :</h2>
+        <a href={{ path('event_create') }}>Nouveau Event</a><br>
+        <table>
+            <tr>
+                <th>nom</th>
+                <th>debut</th>
+                <th>clôture</th>
+                <th>places</th>
+                <th>etat</th>
+                <th>organisateur</th>
+                <th>actions</th>
+            </tr>
+        {% for event in events %}
+            <tr>
+                {# <div class="{{ wish.category.iconame }}"></div> #}
+                <td><a href="{{ path('event_showOne', {'id': event.id}) }}">{{ event.name }}</a></td>
+                <td>{{ event.dateStart.format('d/m/Y H:i') }}</td>
+                <td>{{ event.dateLimit.format('d/m/Y H:i') }}</td>
+                <td>{{ event.peopleMax }}</td>
+                <td> //TODO etat </td>
+                <td>{{ event.organizer.name }}</td>
+                <td><a href={{ path('event_edit', {'id': event.id}) }}>Modifier</a>&nbsp&nbsp&nbsp<a href={{ path('event_remove',{'id':event.id}) }}>Supprimer</a></td>
+
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+    <input type="button" value="Retour" onclick="history.go(-1)">
 {% endblock %}

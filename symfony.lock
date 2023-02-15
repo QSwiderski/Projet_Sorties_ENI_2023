@@ -186,6 +186,7 @@
             "./config/routes/web_profiler.yaml"
         ]
     },
+
     "symfony/webpack-encore-bundle": {
         "version": "1.16",
         "recipe": {
@@ -205,6 +206,7 @@
             "./webpack.config.js"
         ]
     },
+
     "twig/extra-bundle": {
         "version": "v3.5.1"
     }
