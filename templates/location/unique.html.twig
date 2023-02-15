@@ -4,25 +4,12 @@
 
 {% block body %}
     <div class="container">
-        <h2>Lieux de sortie :</h2>
-        <table style="overflow: auto; height:500px">
-            <tr>
-                <th>nom</th>
-                <th>adresse</th>
-                <th>code postal</th>
-                <th>ville</th>
-                <th>latitude</th>
-                <th>longitude</th>
-            </tr>
-                <tr>
-                    {# <div class="{{ wish.category.iconame }}"></div> #}
-                    <td><a href="{{ path('location_showOne', {'id': location.id}) }}">{{ location.name }}</a></td>
-                    <td>{{ location.adress }}</td>
-                    <td>{{ location.postcode }}</td>
-                    <td>{{ location.city }}</td>
-                    <td>{{ location.latitude }}</td>
-                    <td>{{ location.longitude }}</td>
-                </tr>
-        </table>
+        <h2>{{ location.name }}</h2>
+        <p>nom : {{ location.name }}</p>
+        <p>adresse : {{ location.adress }}</p>
+        <p>code postal : {{ location.postcode }}</p>
+        <p>ville : {{ location.city }}</p>
+        <p>latitude : {{ location.latitude }}</p>
+        <p>longitude : {{ location.longitude }}</p>
     </div>
 {% endblock %}

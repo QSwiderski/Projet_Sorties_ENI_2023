@@ -46,17 +46,13 @@ class LocationController extends AbstractController
     {
         $location = new Location();
         $form = $this->createForm(LocationType::class, $location);
-        /*
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $event->(true);
-            $event->(new \dateTime());
-            $em->persist($event);
+            $em->persist($location);
             $em->flush();
-            return $this->redirectToRoute('wish_wishes',["id"=>$wish->getId()]);
+            return $this->redirectToRoute('location_showOne',["id"=>$location->getId()]);
         }
         $this->addFlash('great_success','Panier ! Un souhaite de plus dans le Seau');
-        */
         return $this->render('location/create.html.twig', [
                 'form' => $form
             ]

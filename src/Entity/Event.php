@@ -51,6 +51,8 @@ class Event
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        //on setup toujours à false par défaut. Une fois à true on ne pourra revenir en arriere.
+        $this->isPublished = false;
     }
 
     public function getId(): ?int
@@ -188,8 +190,13 @@ class Event
 
     public function setIsPublished(bool $isPublished): self
     {
-        $this->isPublished = $isPublished;
-
+        /*
+         * On vérifie qu'on cherche à passer à true
+         * on ne peut jamais retourner à false une fois passé à true
+         */
+        if ($isPublished) {
+            $this->isPublished = true;
+        }
         return $this;
     }
 }

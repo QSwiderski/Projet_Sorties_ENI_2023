@@ -4,26 +4,12 @@
 
 {% block body %}
     <div class="container">
-        <h2>Evenements :</h2>
-        <table style="overflow: auto; height:500px">
-            <tr>
-                <th>nom</th>
-                <th>debut</th>
-                <th>clôture</th>
-                <th>places</th>
-                <th>etat</th>
-                <th>organisateur</th>
-            </tr>
-                <tr>
-                    {# <div class="{{ wish.category.iconame }}"></div> #}
-                    <td><a href="{{ path('event_showOne', {'id': event.id}) }}">{{ event.name }}</a></td>
-                    <td>{{ event.dateStart.format('Y-m-d H:i:s') }}</td>
-                    <td>{{ event.dateLimit.format('Y-m-d H:i:s') }}</td>
-                    <td>{{ event.peopleMax }}</td>
-                    <td> //TODO etat </td>
-                    <td>{{ event.organizer.name }}</td>
-
-                </tr>
-        </table>
+        <h2>Evenement {{ event.name }}</h2>
+        <p>nom : {{ event.name }}</p>
+        <p>debut : {{ event.dateStart.format('Y-m-d H:i:s') }}</p>
+        <p>clôture : {{ event.dateLimit.format('Y-m-d H:i:s') }}</p>
+        <p>places : {{ event.peopleMax }}</p>
+        <p>etat : //TODO etat </p>
+        <p>organisateur : {{ event.organizer.name }}</p>
     </div>
 {% endblock %}
