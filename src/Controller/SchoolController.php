@@ -31,7 +31,7 @@ class SchoolController extends AbstractController
         if ($schoolForm->isSubmitted()) {
             $em->persist($school);
             $em->flush();
-            return $this->redirectToRoute('school_create');
+            return $this->redirectToRoute('school_list');
         };
 
         return $this->render(

@@ -13,25 +13,19 @@
         "symfony/asset": "6.2.*",
         "symfony/console": "6.2.*",
         "symfony/dotenv": "6.2.*",
-        "symfony/flex": "^2",
-        "sensio/framework-extra-bundle": "^6.2",
-        "symfony/console": "6.2.*",
-        "symfony/dotenv": "6.2.*",
         "symfony/flex": "^2.2",
         "symfony/form": "6.2.*",
         "symfony/framework-bundle": "6.2.*",
         "symfony/maker-bundle": "^1.48",
+        "symfony/password-hasher": "6.2.*",
         "symfony/runtime": "^6.2",
         "symfony/security-bundle": "6.2.*",
         "symfony/security-csrf": "6.2.*",
         "symfony/twig-bundle": "6.2.*",
         "symfony/validator": "6.2.*",
-        "symfony/webpack-encore-bundle": "^1.16",
         "symfony/yaml": "6.2.*",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0",
-        "ext-http": "*",
-        "ext-json/ext-json": "*"
+        "twig/twig": "^2.12|^3.0"
     },
     "config": {
         "allow-plugins": {
@@ -83,18 +77,9 @@
     },
     "require-dev": {
         "symfony/debug-bundle": "6.2.*",
-
-        "symfony/stopwatch": "6.2.*",
-        "symfony/var-dumper": "6.2.*",
-
-
-        "symfony/stopwatch": "6.2.*",
-        "symfony/var-dumper": "6.2.*",
-
         "symfony/monolog-bundle": "^3.0",
         "symfony/stopwatch": "6.2.*",
-
-
+        "symfony/var-dumper": "6.2.*",
         "symfony/web-profiler-bundle": "6.2.*"
     }
 }

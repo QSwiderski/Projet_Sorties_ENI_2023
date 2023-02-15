@@ -19,3 +19,12 @@ th, td {
 td>a{
     font-size: 1.2em;
 }
+#logo{
+    max-width: 360px;
+}
+header{
+    align-content: space-between;
+}
+header>div{
+    display: inline-block ;
+}
