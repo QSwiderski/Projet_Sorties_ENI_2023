@@ -16,6 +16,9 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 30)]
+    private ?string $Pseudo = null;
+
+    #[ORM\Column(length: 30)]
     private ?string $name = null;
 
     #[ORM\Column(length: 30)]
@@ -27,6 +30,9 @@ class User
     #[ORM\Column(length: 80)]
     private ?string $email = null;
 
+    #[ORM\Column(length: 40)]
+    private ?string $password = null;
+
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
     private ?School $school = null;
@@ -36,9 +42,6 @@ class User
 
     #[ORM\OneToMany(mappedBy: 'organizer', targetEntity: Event::class, orphanRemoval: true)]
     private Collection $organizedEvents;
-
-    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
-    private ?Credentials $credentials = null;
 
     public function __construct()
     {
@@ -51,6 +54,17 @@ class User
         return $this->id;
     }
 
+    public function getPseudo(): ?string
+    {
+        return $this->Pseudo;
+    }
+
+    public function setPseudo(string $Pseudo): self
+    {
+        $this->Pseudo = $Pseudo;
+
+        return $this;
+    }
 
     public function getName(): ?string
     {
@@ -96,6 +110,18 @@ class User
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
 
         return $this;
     }
@@ -162,23 +188,6 @@ class User
                 $organizedEvent->setOrganizer(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getCredentials(): ?Credentials
-    {
-        return $this->credentials;
-    }
-
-    public function setCredentials(Credentials $credentials): self
-    {
-        // set the owning side of the relation if necessary
-        if ($credentials->getUser() !== $this) {
-            $credentials->setUser($this);
-        }
-
-        $this->credentials = $credentials;
 
         return $this;
     }
