@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ edit? 'Modifier':'Créer' }} un evenement - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <h2>{{ edit? 'Modifier un ':'Creer un nouvel' }} evenement</h2>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button>{{ edit? 'Appliquer':'Créer' }}</button>
+    {{ form_end(form) }}
+    <form>
+        <input type="button" value="Annuler" onclick="history.go(-1)">
+    </form>
+{% endblock %}
