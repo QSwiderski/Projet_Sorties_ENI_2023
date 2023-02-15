@@ -34,29 +34,30 @@ class EventController extends AbstractController
 
     #[Route('/new', name: '_create')]
     public function create(
-        UserRepository $userRepo,
+        UserRepository         $userRepo,
         EntityManagerInterface $em,
-        Request $request
+        Request                $request
     ): Response
     {
-        //BOUCHON SA MERE
+        $organizer = $userRepo->find(14);//BOUCHON SA MERE
 
-        $organizer = $userRepo->find(1);
         $event = new Event();
-        $form = $this->createForm(EventType::class,$event);
-                $form->handleRequest($request);
+        $form = $this->createForm(EventType::class, $event);
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $event->setOrganizer($organizer);
             $em->persist($event);
             $em->flush();
-            return $this->redirectToRoute('event_showOne',["id"=>$event->getId()]);
+            return $this->redirectToRoute('event_showOne', ["id" => $event->getId()]);
         }
-        $this->addFlash('success','Votre evenement est bien enregistré');
+        $this->addFlash('success', 'Votre evenement est bien enregistré');
         return $this->render('event/create.html.twig', [
-            'form' => $form
-        ]
+                'form' => $form,
+                'edit' => false
+            ]
         );
     }
+
     #[Route('/', name: '_showAll')]
     public function showAll(
         EventRepository $evRepo
@@ -66,5 +67,44 @@ class EventController extends AbstractController
         return $this->render('event/index.html.twig', [
             'events' => $events
         ]);
+    }
+
+    #[Route('/edit/{id}', name: '_edit')]
+    public function edit(
+        int                    $id,
+        UserRepository         $userRepo,
+        EntityManagerInterface $em,
+        Request                $request,
+        EventRepository        $evRepo
+    ): Response
+    {
+        $event = $evRepo->findOneBy(['id' => $id]);
+        $form = $this->createForm(EventType::class, $event);
+        $form->handleRequest($request);
+        $title = 'texte '.random(0,10);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($event);
+            $em->flush();
+            return $this->redirectToRoute('event_showOne', ["id" => $event->getId()]);
+        }
+        $this->addFlash('success', 'Votre modification est bien enregistrée');
+        return $this->render('event/create.html.twig', [
+            'form' => $form,
+            'edit' =>true
+        ]);
+    }
+
+    #[Route('/remove/{id}', name: '_remove')]
+    public function remove(
+        int             $id,
+        EventRepository $evRepo,
+        EntityManagerInterface $em
+    ): Response
+    {
+        $event = $evRepo->findOneBy(['id' => $id]);
+        $em->remove($event);
+        $em->flush();
+        return $this->redirectToRoute('event_showAll');
+
     }
 }

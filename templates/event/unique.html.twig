@@ -6,10 +6,11 @@
     <div class="container">
         <h2>Evenement {{ event.name }}</h2>
         <p>nom : {{ event.name }}</p>
-        <p>debut : {{ event.dateStart.format('Y-m-d H:i:s') }}</p>
-        <p>clôture : {{ event.dateLimit.format('Y-m-d H:i:s') }}</p>
+        <p>debut : {{ event.dateStart.format('d/m/Y H:i') }}</p>
+        <p>clôture : {{ event.dateLimit.format('d/m/Y H:i') }}</p>
         <p>places : {{ event.peopleMax }}</p>
         <p>etat : //TODO etat </p>
         <p>organisateur : {{ event.organizer.name }}</p>
     </div>
+    <input type="button" value="Retour" onclick="history.go(-2)">
 {% endblock %}

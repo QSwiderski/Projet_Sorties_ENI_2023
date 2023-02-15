@@ -50,12 +50,51 @@ class LocationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($location);
             $em->flush();
-            return $this->redirectToRoute('location_showOne',["id"=>$location->getId()]);
+            return $this->redirectToRoute('location_showOne', ["id" => $location->getId()]);
         }
-        $this->addFlash('great_success','Panier ! Un souhaite de plus dans le Seau');
+        $this->addFlash('great_success', 'Panier ! Un souhaite de plus dans le Seau');
         return $this->render('location/create.html.twig', [
-                'form' => $form
+                'form' => $form,
+                'edit' => false
             ]
         );
+    }
+
+    #[Route('/edit/{id}', name: '_edit')]
+    public function edit(
+        int                    $id,
+        EntityManagerInterface $em,
+        Request                $request,
+        LocationRepository     $locRepo
+    ): Response
+    {
+        $location = $locRepo->findOneBy(['id' => $id]);
+        $form = $this->createForm(LocationType::class, $location);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($location);
+            $em->flush();
+            $this->addFlash('success', 'Votre modification est bien enregistrée');
+            return $this->redirectToRoute('location_showOne', ["id" => $location->getId()]);
+        }
+        return $this->render('location/create.html.twig', [
+            'form' => $form,
+            'edit' => true
+        ]);
+
+
+    }
+
+    #[Route('/remove/{id}', name: '_remove')]
+    public function remove(
+        int                    $id,
+        locationRepository     $locRepo,
+        EntityManagerInterface $em
+    ): Response
+    {
+        $location = $locRepo->findOneBy(['id' => $id]);
+        $em->remove($location);
+        $em->flush();
+        return $this->redirectToRoute('location_showAll');
     }
 }
