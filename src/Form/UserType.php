@@ -15,21 +15,16 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Pseudo')
+            ->add('credentials', RegistrationFormType::class)
             ->add('name')
             ->add('surname')
             ->add('phone')
             ->add('email')
-            ->add('password')
             ->add('school', EntityType::class, [
                 "class"=>School::class,
                 "choice_label"=>'name'
             ])
-            ->add('events', EntityType::class, [
-                "class"=>Event::class,
-                "choice_label"=>'name',
-                'mapped' => false
-            ])
+
         ;
     }
 
