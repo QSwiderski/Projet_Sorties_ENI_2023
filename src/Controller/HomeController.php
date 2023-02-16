@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
+use http\Client\Curl\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -10,9 +13,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomeController extends AbstractController
 {
     #[Route('/', name: '_index')]
-    public function index(): Response
+    public function index(Request $request,EntityManagerInterface $em): Response
     {
-        return $this->redirectToRoute('event_showAll');
+          if ($request->getUser() == null) {
+              return $this->redirectToRoute('app_user_edition');
+          }
+          else {
+              return $this->redirectToRoute('event_showAll');
+          }
+
+
+
     }
 
     #[Route('/administrator', name: '_admin')]

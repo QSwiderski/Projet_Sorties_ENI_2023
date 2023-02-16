@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\Event;
 use App\Entity\School;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -15,16 +14,13 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('credentials', RegistrationFormType::class)
             ->add('name')
             ->add('surname')
             ->add('phone')
             ->add('email')
             ->add('school', EntityType::class, [
                 "class"=>School::class,
-                "choice_label"=>'name'
-            ])
-
+                "choice_label"=>'name'])
         ;
     }
 

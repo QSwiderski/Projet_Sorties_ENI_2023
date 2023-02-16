@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Credentials;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Form\AdminType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,12 +26,36 @@ class UserController extends AbstractController
     }
 
 
+    #[Route('/editMyProfile', name: 'app_user_edition')]
+    public function editProfil (Request $request,
+                                EntityManagerInterface $em,
+                                Credentials $cred,
+                                UserPasswordHasherInterface
+                                $userPasswordHasher): Response
+    {
+        //$cred = $request->getUser();
+        $user = new User();
+
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $cred->setUser($user);
+
+            $em->persist($user);
+            $em->persist($cred);
+            $em->flush();
+            return $this->redirectToRoute('app_user_edition');
+        }
+        return $this->render('user/editMyProfil.html.twig',['form'=>$form]);
+    }
+
     #[Route('/new', name: 'app_user_new')]
     public function new(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface
     $userPasswordHasher): Response
     {
         $user = new User();
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(AdminType::class, $user);
         //$credentials = new Credentials();
         //$credentials->setUser($user);
 
@@ -71,7 +96,7 @@ class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'app_user_edit')]
     public function edit(Request $request, User $user, EntityManagerInterface $em): Response
     {
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(AdminType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
