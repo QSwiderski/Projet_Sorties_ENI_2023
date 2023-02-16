@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Event;
-use App\Entity\User;
 use App\Form\EventType;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
@@ -42,9 +41,17 @@ class EventController extends AbstractController
         $organizer = $userRepo->find(14);//BOUCHON SA MERE
 
         $event = new Event();
+        //Initialisation 'par defaut' des variables du nouvel event
+        $timeSetter = new DateTime('now');
+        $timeSetter->setTime(0,0,0);
+        $event->setDateStart($timeSetter);
+        $event->setDateFinish($timeSetter);
+        $event->setDateLimit($timeSetter);
+        //fin initialisation
+
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && $form->get('event_location')->getData()!=null) {
             $event->setOrganizer($organizer);
             $em->persist($event);
             $em->flush();
@@ -72,7 +79,6 @@ class EventController extends AbstractController
     #[Route('/edit/{id}', name: '_edit')]
     public function edit(
         int                    $id,
-        UserRepository         $userRepo,
         EntityManagerInterface $em,
         Request                $request,
         EventRepository        $evRepo
@@ -81,7 +87,6 @@ class EventController extends AbstractController
         $event = $evRepo->findOneBy(['id' => $id]);
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
-        $title = 'texte '.random(0,10);
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($event);
             $em->flush();

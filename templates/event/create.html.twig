@@ -4,11 +4,43 @@
 
 {% block body %}
     <h2>{{ edit? 'Modifier un ':'Creer un nouvel' }} evenement</h2>
+    <div><label for="school_name">Ecole de rattachement</label>
+        <p id="school_name">{{ app.user.user.school.name }}</p></div>
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ form_start(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.dateStart) }}
+    {{ form_row(form.dateFinish) }}
+    {{ form_row(form.peopleMax) }}
+    {{ form_row(form.description) }}
+    {{ form_row(form.location) }}
+    {{ form_row(form.dateLimit) }}
     <button>{{ edit? 'Appliquer':'Créer' }}</button>
     {{ form_end(form) }}
+    <button id="loc_create">Ajouter un lieu</button>
     <form>
         <input type="button" value="Annuler" onclick="history.go(-1)">
     </form>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        document
+            .getElementById('loc_create')
+            .addEventListener('click', function () {
+                    open('/location/new',
+                        '_blank',
+                        [scrollbars = 'no',
+                            screenX = '5',
+                            statusbar = 'no',
+                            toolbar = 'no',
+                            menubar = 'no',
+                            resizable = 'no',
+                            directories = 'no',
+                            width = '200',
+                            height = '200']);
+                }
+            );
+
+
+    </script>
 {% endblock %}

@@ -52,7 +52,28 @@ class LocationController extends AbstractController
             $em->flush();
             return $this->redirectToRoute('location_showOne', ["id" => $location->getId()]);
         }
-        $this->addFlash('great_success', 'Panier ! Un souhaite de plus dans le Seau');
+        $this->addFlash('success', 'Bien enregistré');
+        return $this->render('location/create.html.twig', [
+                'form' => $form,
+                'edit' => false
+            ]
+        );
+    }
+    #[Route('/newfromevent', name: '_createFromEvent')]
+    public function createFromEvent(
+        EntityManagerInterface $em,
+        Request                $request
+    ): Response
+    {
+        $location = new Location();
+        $form = $this->createForm(LocationType::class, $location);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($location);
+            $em->flush();
+            return $this->redirectToRoute('location_showOne', ["id" => $location->getId()]);
+        }
+        $this->addFlash('success', 'Bien enregistré');
         return $this->render('location/create.html.twig', [
                 'form' => $form,
                 'edit' => false

@@ -28,7 +28,8 @@ class EventType extends AbstractType
             EntityType::class,
             [
                 "class" => Location::class,
-                "choice_label" => "name"
+                "choice_label" => "name",
+                "required"=>false
             ]
         );
     }
