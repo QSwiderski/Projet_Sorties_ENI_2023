@@ -2,12 +2,13 @@
 
 {% block body %}
     <h2>Gérer les sites</h2>
-    <div><a href={{ path('school_create') }}>Ajouter un site</a></div>
-    <h3>Filtrer les sites</h3>
-    <p>Le nom contient : <input type="text">
-        <button>Rechercher</button>
-        <br>
-    </p>
+
+    <form action={{ path('school_listeresearch') }} method="GET" name="Formulaire">
+        Le nom contient: <input name="Research" type="text" id="Research" size="30">
+        <input type="submit" value="Envoyer">
+    </form>
+           <br>
+
     <table>
         <tr>
             <th>Ville</th>

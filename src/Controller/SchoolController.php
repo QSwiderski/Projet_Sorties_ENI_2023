@@ -7,6 +7,7 @@ use App\Form\SchoolType;
 use App\Repository\SchoolRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\OrderBy;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,7 +58,7 @@ class SchoolController extends AbstractController
 
         $schoolForm->handleRequest(($request));
 
-        if ($schoolForm->isSubmitted() && $school->getName()!='Merci de définir un nom de site') {
+        if ($schoolForm->isSubmitted() && $school->getName()!='Merci de définir un nom') {
             $em->persist($school);
             $em->flush();
             return $this->redirectToRoute('school_list');
@@ -70,12 +71,33 @@ class SchoolController extends AbstractController
     #[Route('/', name: '_list')]
     public function list(
         SchoolRepository $schoolRepository,
+        Request $request
     ): Response
     {
-        $schools = $schoolRepository->findAll();
+        $schools = $request->query->get('schools');
+        if ($schools==null){
+            $schools = $schoolRepository->findAll();
+        }
         return $this->render('school/list.html.twig',
             [
                 "schools" => $schools
+            ]);
+    }
+
+    #[Route('/research', name: '_listeresearch')]
+    public function listeResearch(
+
+        SchoolRepository $schoolRepository,
+        EntityManagerInterface $em,
+        Request $request,
+    ): Response
+    {
+        $research = $request->query->get('Research');
+        $schools = $schoolRepository->findBy(['name' => $research]);
+        if ($schools==null){$schools='VIDE';}
+        return $this->redirectToRoute('school_list',
+            [
+                "schools" => $schools,
             ]);
     }
 
@@ -118,19 +140,4 @@ class SchoolController extends AbstractController
         ]);
 
     }
-
-
-    /*#[Route('/{recherche}', name: '_rechercher')]
-    public function rechercher(
-        string           $name,
-        SchoolRepository $schoolRepository,
-        Request          $request
-    ): Response
-    {
-
-        $schools = $schoolRepository->findBy(["name" => $name]);
-        return $this->render('school/list.html.twig', compact('schools'));
-    }*/
-
-
-}
+    }
