@@ -21,16 +21,13 @@
         </a></div>
     <div>
         {% if (app.user) %}
-            {% if(true) %}
+            {% if( 'ROLE_ADMIN' in app.user.roles) %}
             <h2><a href="{{ path('home_admin') }}">Administrer</a></h2>
             {% endif %}
             <h2><a href="{{ path('app_user_show', {'id': app.user.id}) }}">Mon Profil</a></h2>
             <h2><a href="{{ path('app_logout') }}">Deconnexion</a></h2>
             <h2><a href="{{ path('app_login') }}">Connexion</a></h2>
         {% else %}
-            {% if(true) %}
-                <h2><a href="{{ path('home_admin') }}">Administrer</a></h2>
-            {% endif %}
             <h2><a href="{{ path('app_logout') }}">Deconnexion</a></h2>
             <h2><a href="{{ path('app_login') }}">Connexion</a></h2>
         {% endif %}

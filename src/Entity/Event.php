@@ -46,7 +46,7 @@ class Event
     private ?Location $location = null;
 
     #[ORM\Column]
-    private ?bool $isPublished = null;
+    private ?bool $isPublished;
 
     public function __construct()
     {
