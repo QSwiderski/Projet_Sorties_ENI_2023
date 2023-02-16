@@ -40,6 +40,33 @@ class SchoolController extends AbstractController
                 'title' => 'Créer']);
     }
 
+    #[Route('/createwithname/', name: '_createwithname')]
+    public function createSchoolWithName(
+        EntityManagerInterface $em,
+        Request                $request,
+    ): Response
+    {
+        $name = $request->query->get('NomSchool','Merci de définir un nom');
+        if ($name==""){
+            $name='Merci de définir un nom';
+        }
+
+        $school = new School();
+        $school->setName($name);
+        $schoolForm = $this->createForm(SchoolType::class, $school);
+
+        $schoolForm->handleRequest(($request));
+
+        if ($schoolForm->isSubmitted() && $school->getName()!='Merci de définir un nom de site') {
+            $em->persist($school);
+            $em->flush();
+            return $this->redirectToRoute('school_list');
+        };
+
+        return $this->render(
+            'school/create.html.twig', ['schoolForm' => $schoolForm, 'modify'=>false]);
+    }
+
     #[Route('/', name: '_list')]
     public function list(
         SchoolRepository $schoolRepository,
