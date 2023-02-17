@@ -47,6 +47,22 @@ class LocationController extends AbstractController
     ): Response
     {
         $location = new Location();
+        /*
+        //A COMMENTER - DECOMMENTER VERSION PIERRICK ORIGINELLE
+        // On cherche si on requete location_create depuis une création d'event
+        $fromEvent = false;
+        $keys = ['mem_name', 'mem_dateStart', 'mem_dateFinish', 'mem_dateLimit', 'mem_peopleMax', 'mem_description'];
+        //on memorise chaque élément, en vérifiant au passage si le moindre d'entre eux est non null
+        $memvalues = [];
+        foreach ($keys as $key) {
+            $value = $request->request->get($key);
+            $memvalues[$key] = $value;
+            if ($value != null) {
+                $fromEvent=true;
+            }
+        }
+        //FIN DE ZONE A COMMENT-DECOMMENT
+        */
 
         //on gère le formulaire normal de lieu
         $form = $this->createForm(LocationType::class, $location);
@@ -56,11 +72,12 @@ class LocationController extends AbstractController
             $em->flush();
             $this->addFlash('success', 'Bien enregistré');
 
+            //A COMMENTER-DECOMMENTER POUR LA VERSION JULIEN = CALCULER DANS LE IF
             // On cherche si on requete location_create depuis une création d'event
             $fromEvent = false;
             $keys = ['mem_name', 'mem_dateStart', 'mem_dateFinish', 'mem_dateLimit', 'mem_peopleMax', 'mem_description'];
             //on memorise chaque élément, en vérifiant au passage si le moindre d'entre eux est non null
-            $memvalues = new ArrayCollection();
+            $memvalues = [];
             foreach ($keys as $key) {
                 $value = $request->request->get($key);
                 $memvalues[$key] = $value;
@@ -68,10 +85,17 @@ class LocationController extends AbstractController
                     //return $this->redirectToRoute('event_create'); //on retourne à la création d'event
                 }
             }
-            dd($memvalues);
-            return $this->redirectToRoute('location_showOne', ["id" => $location->getId()]); //on retourne à l'affichage cumulé (sur adminpanel)
+            //FIN DE ZONE A COMMENT-DECOMMENT
+            dd($request);
+            return $this->redirectToRoute('location_showOne', ["id" => $location->getId()]); //on retourne à l'affichage showAll (sur adminpanel)
 
+
+            if ($fromEvent) {
+                return $this->redirectToRoute('event_create'); //on retourne à la création d'event
+            }
+            return $this->redirectToRoute('location_showOne', ["id" => $location->getId()]); //on retourne à l'affichage showAll (sur adminpanel)
         }
+
         return $this->render('location/create.html.twig', [
                 'form' => $form,
                 'edit' => false
