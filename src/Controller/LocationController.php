@@ -47,32 +47,31 @@ class LocationController extends AbstractController
     ): Response
     {
         $location = new Location();
-        // On cherche si on requete location_create depuis une création d'event
-        $fromEvent = false;
-        $keys = ['mem_name', 'mem_dateStart', 'mem_dateFinish', 'mem_dateLimit', 'mem_peopleMax', 'mem_description'];
-        //on memorise chaque élément, en vérifiant au passage si le moindre d'entre eux est non null
-        $values = new ArrayCollection();
-        foreach ($keys as $key) {
-            $value= $request->request->get($key);
-            $values[$key]=$value;
-            if ($value !=null) {
-                dd($value);
-                $fromEvent = true;
-            }
-        }
+
+        //on gère le formulaire normal de lieu
         $form = $this->createForm(LocationType::class, $location);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($location);
             $em->flush();
-            if ($fromEvent) {
-                dd($values);
-                return $this->redirectToRoute('event_create', compact($values));
-            }else{
-                return $this->redirectToRoute('location_showOne', ["id" => $location->getId()]);
+            $this->addFlash('success', 'Bien enregistré');
+
+            // On cherche si on requete location_create depuis une création d'event
+            $fromEvent = false;
+            $keys = ['mem_name', 'mem_dateStart', 'mem_dateFinish', 'mem_dateLimit', 'mem_peopleMax', 'mem_description'];
+            //on memorise chaque élément, en vérifiant au passage si le moindre d'entre eux est non null
+            $memvalues = new ArrayCollection();
+            foreach ($keys as $key) {
+                $value = $request->request->get($key);
+                $memvalues[$key] = $value;
+                if ($value != null) {
+                    //return $this->redirectToRoute('event_create'); //on retourne à la création d'event
+                }
             }
+            dd($memvalues);
+            return $this->redirectToRoute('location_showOne', ["id" => $location->getId()]); //on retourne à l'affichage cumulé (sur adminpanel)
+
         }
-        $this->addFlash('success', 'Bien enregistré');
         return $this->render('location/create.html.twig', [
                 'form' => $form,
                 'edit' => false

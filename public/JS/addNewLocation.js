@@ -17,5 +17,9 @@ function CreateNewLocation() {
         input.value = value;         //renseigner la valeur
         f.appendChild(input);        //ajouter ce clé & valeur au fantome
     }
-    hidden.appendChild(f); f.submit();     //intégrer le fantome et le submit
+
+    hidden.appendChild(f);
+    //intégrer le fantome et le submit
+    // console.log(f);
+    f.submit();
 }

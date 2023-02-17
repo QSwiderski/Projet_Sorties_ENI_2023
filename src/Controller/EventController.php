@@ -42,19 +42,11 @@ class EventController extends AbstractController
     {
         //trouver le pseudo loggué en session
         $pseudo = $this->getUser()->getUserIdentifier();
-        //en trouver le responsable en DB
+        //en trouver le user lié en DB
         $organizer = $credRepo->findOneBy(['pseudo'=>$pseudo]);
 
+        // On cherche les data en requete le cas échéant
         $event = new Event();
-
-
-        //on init les dates à afficher
-        $timeSetter = new DateTime('now');
-        $event->setDateStart(Clone($timeSetter)->setTime(17,0));
-        $event->setDateFinish(Clone($timeSetter)->setTime(19,0));
-        $event->setDateLimit(Clone($timeSetter)->setTime(12,0));
-
-        // On cherche si on requete event_create en revenant de location_create
         $fromLoc = false;
         $keys = ['mem_name', 'mem_dateStart', 'mem_dateFinish', 'mem_dateLimit', 'mem_peopleMax', 'mem_description'];
         //on memorise chaque élément, en vérifiant au passage si le moindre d'entre eux est non null
@@ -66,10 +58,11 @@ class EventController extends AbstractController
                 $fromLoc = true;
             }
         }
+
         if($fromLoc){
             dd($values);
         }
-
+        //on gère le formulaire normal de Event
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid() && $form->get('event_location')->getData()!=null) {
