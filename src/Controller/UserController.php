@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Form\AdminType;
 use App\Form\UserType;
+use App\Repository\CredentialsRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,25 +30,35 @@ class UserController extends AbstractController
     #[Route('/editMyProfile', name: 'app_user_edition')]
     public function editProfil (Request $request,
                                 EntityManagerInterface $em,
-                                Credentials $cred,
+                                CredentialsRepository $credentialsRepository,
                                 UserPasswordHasherInterface
                                 $userPasswordHasher): Response
     {
-        //$cred = $request->getUser();
-        $user = new User();
+
+        //récupération du pseudo de la session
+        $pseudo= $this->getUser()->getUserIdentifier();
+        //Avec le pseudo, retrouver l'objet Credentials
+        $cred= $credentialsRepository->findOneBy(['pseudo'=>$pseudo]);
+        //tentative de récupération du User si il existe
+        $user = $cred->getUser();
+        //Sinon création du User
+        if ($cred->getUser() == null){
+            $user = new User();
+        }
+        //Faire la OneToOne entre l'objet Credentials et le nouvel objet User
+        $user->setCredentials($cred);
 
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $cred->setUser($user);
 
             $em->persist($user);
-            $em->persist($cred);
+            //$em->persist($cred);
             $em->flush();
-            return $this->redirectToRoute('app_user_edition');
+            return $this->redirectToRoute('home_index');
         }
-        return $this->render('user/editMyProfil.html.twig',['form'=>$form]);
+        return $this->render('user/editMyProfil.html.twig',['form'=> $form]);
     }
 
     #[Route('/new', name: 'app_user_new')]
