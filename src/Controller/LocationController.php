@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
 use App\Entity\Location;
 use App\Form\LocationType;
 use App\Repository\LocationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,33 +47,30 @@ class LocationController extends AbstractController
     ): Response
     {
         $location = new Location();
-        $form = $this->createForm(LocationType::class, $location);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($location);
-            $em->flush();
-            return $this->redirectToRoute('location_showOne', ["id" => $location->getId()]);
+        // On cherche si on requete location_create depuis une création d'event
+        $fromEvent = false;
+        $keys = ['mem_name', 'mem_dateStart', 'mem_dateFinish', 'mem_dateLimit', 'mem_peopleMax', 'mem_description'];
+        //on memorise chaque élément, en vérifiant au passage si le moindre d'entre eux est non null
+        $values = new ArrayCollection();
+        foreach ($keys as $key) {
+            $value= $request->request->get($key);
+            $values[$key]=$value;
+            if ($value !=null) {
+                dd($value);
+                $fromEvent = true;
+            }
         }
-        $this->addFlash('success', 'Bien enregistré');
-        return $this->render('location/create.html.twig', [
-                'form' => $form,
-                'edit' => false
-            ]
-        );
-    }
-    #[Route('/newfromevent', name: '_createFromEvent')]
-    public function createFromEvent(
-        EntityManagerInterface $em,
-        Request                $request
-    ): Response
-    {
-        $location = new Location();
         $form = $this->createForm(LocationType::class, $location);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($location);
             $em->flush();
-            return $this->redirectToRoute('location_showOne', ["id" => $location->getId()]);
+            if ($fromEvent) {
+                dd($values);
+                return $this->redirectToRoute('event_create', compact($values));
+            }else{
+                return $this->redirectToRoute('location_showOne', ["id" => $location->getId()]);
+            }
         }
         $this->addFlash('success', 'Bien enregistré');
         return $this->render('location/create.html.twig', [

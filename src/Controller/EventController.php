@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Form\EventType;
+use App\Repository\CredentialsRepository;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,21 +35,40 @@ class EventController extends AbstractController
 
     #[Route('/new', name: '_create')]
     public function create(
-        UserRepository         $userRepo,
+        CredentialsRepository $credRepo,
         EntityManagerInterface $em,
         Request                $request
     ): Response
     {
-        $organizer = $userRepo->find(14);//BOUCHON SA MERE
+        //trouver le pseudo loggué en session
+        $pseudo = $this->getUser()->getUserIdentifier();
+        //en trouver le responsable en DB
+        $organizer = $credRepo->findOneBy(['pseudo'=>$pseudo]);
 
         $event = new Event();
-        //Initialisation 'par defaut' des variables du nouvel event
+
+
+        //on init les dates à afficher
         $timeSetter = new DateTime('now');
-        $timeSetter->setTime(0,0,0);
-        $event->setDateStart($timeSetter);
-        $event->setDateFinish($timeSetter);
-        $event->setDateLimit($timeSetter);
-        //fin initialisation
+        $event->setDateStart(Clone($timeSetter)->setTime(17,0));
+        $event->setDateFinish(Clone($timeSetter)->setTime(19,0));
+        $event->setDateLimit(Clone($timeSetter)->setTime(12,0));
+
+        // On cherche si on requete event_create en revenant de location_create
+        $fromLoc = false;
+        $keys = ['mem_name', 'mem_dateStart', 'mem_dateFinish', 'mem_dateLimit', 'mem_peopleMax', 'mem_description'];
+        //on memorise chaque élément, en vérifiant au passage si le moindre d'entre eux est non null
+        $values = new ArrayCollection();
+        foreach ($keys as $key) {
+            $value= $request->request->get($key);
+            $values[$key]=$value;
+            if ($value !=null && $value!== '') {
+                $fromLoc = true;
+            }
+        }
+        if($fromLoc){
+            dd($values);
+        }
 
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);

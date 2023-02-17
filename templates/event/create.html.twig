@@ -14,33 +14,15 @@
     {{ form_row(form.peopleMax) }}
     {{ form_row(form.description) }}
     {{ form_row(form.location) }}
+    <div id="loc_create">(+)</div>
     {{ form_row(form.dateLimit) }}
     <button>{{ edit? 'Appliquer':'Créer' }}</button>
     {{ form_end(form) }}
-    <button id="loc_create">Ajouter un lieu</button>
     <form>
         <input type="button" value="Annuler" onclick="history.go(-1)">
     </form>
+    <div id="hidden">{{ path('location_create') }}</div>
 {% endblock %}
 {% block javascripts %}
-    <script>
-        document
-            .getElementById('loc_create')
-            .addEventListener('click', function () {
-                    open('/location/new',
-                        '_blank',
-                        [scrollbars = 'no',
-                            screenX = '5',
-                            statusbar = 'no',
-                            toolbar = 'no',
-                            menubar = 'no',
-                            resizable = 'no',
-                            directories = 'no',
-                            width = '200',
-                            height = '200']);
-                }
-            );
-
-
-    </script>
+    <script src="{{ asset('JS/addNewLocation.js') }}"></script>
 {% endblock %}
