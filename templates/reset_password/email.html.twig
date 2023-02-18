@@ -1,0 +1,17 @@
+<h1>Hi!</h1>
+
+<p>BONJOUR BILLY, VISIBLEMENT TE SOUVENIR D'UN MOT DE PASSE EST TROP COMPLEXE</p>
+
+<p> LE FAIT QUE NOUS SOYONS DE LA MEME ESPECE M'ATTRISTE GRANDEMENT</p>
+
+<p> APPUIE SUR LE JOLI LIEN EN DESSOUS POUR CHANGER DE MOT DE PASSE. SI BESOIN N'HESITE PAS A DEMANDER DE L'AIDE A TES PARENTS, OU A BABOUCHE LE SINGE SI C'EST TROP DUR POUR TOI</p>
+
+<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">{{ url('app_reset_password', {token: resetToken.token}) }}</a>
+
+<p>This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+
+
+<img src="https://media.tenor.com/aCiL7dqF3G8AAAAC/saved-favorite-homer.gif">
+
+
+<p>BRAVO</p>
