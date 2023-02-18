@@ -10,8 +10,6 @@
         <link rel="stylesheet" href="{{ asset('style/style.css') }}">
     {% endblock %}
 
-    {% block javascripts %}
-    {% endblock %}
 </head>
 <header>
     <div><a href={{ path('home_index') }}>
@@ -21,23 +19,23 @@
         </a></div>
     <div>
         {% if (app.user) %}
-            {% if(true) %}
+            {% if( 'ROLE_ADMIN' in app.user.roles) %}
             <h2><a href="{{ path('home_admin') }}">Administrer</a></h2>
             {% endif %}
-            <h2><a href="{{ path('app_user_show', {'id': app.user.id}) }}">Mon Profil</a></h2>
+            <h2><a href="{{ path('app_user_show', {'id': app.user.id}) }}">{{ app.user.pseudo }}</a></h2>
             <h2><a href="{{ path('app_logout') }}">Deconnexion</a></h2>
-            <h2><a href="{{ path('app_login') }}">Connexion</a></h2>
         {% else %}
-            {% if(true) %}
-                <h2><a href="{{ path('home_admin') }}">Administrer</a></h2>
-            {% endif %}
-            <h2><a href="{{ path('app_logout') }}">Deconnexion</a></h2>
             <h2><a href="{{ path('app_login') }}">Connexion</a></h2>
         {% endif %}
     </div>
 </header>
 <body>
-{% block body %} {% endblock %}
+{% block body %}{% endblock %}
 </body>
-<footer></footer>
+<footer>
+
+</footer>
+
+{% block javascripts %}
+{% endblock %}
 </html>
