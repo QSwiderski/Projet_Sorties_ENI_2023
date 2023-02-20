@@ -12,5 +12,5 @@
         <p>etat : //TODO etat </p>
         <p>organisateur : {{ event.organizer.name }}</p>
     </div>
-    <input type="button" value="Retour" onclick="history.go(-2)">
+        <a href="{{ path('home_index') }}">Retour à L'accueil</a>
 {% endblock %}

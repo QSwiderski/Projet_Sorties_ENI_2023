@@ -28,21 +28,20 @@ class UserController extends AbstractController
 
 
     #[Route('/editMyProfile', name: 'app_user_edition')]
-    public function editProfil (Request $request,
-                                EntityManagerInterface $em,
-                                CredentialsRepository $credentialsRepository,
-                                UserPasswordHasherInterface
-                                $userPasswordHasher): Response
+    public function editProfil(Request                     $request,
+                               EntityManagerInterface      $em,
+                               CredentialsRepository       $credentialsRepository,
+                               UserPasswordHasherInterface $userPasswordHasher): Response
     {
 
         //récupération du pseudo de la session
-        $pseudo= $this->getUser()->getUserIdentifier();
+        $pseudo = $this->getUser()->getUserIdentifier();
         //Avec le pseudo, retrouver l'objet Credentials
-        $cred= $credentialsRepository->findOneBy(['pseudo'=>$pseudo]);
+        $cred = $credentialsRepository->findOneBy(['pseudo' => $pseudo]);
         //tentative de récupération du User si il existe
         $user = $cred->getUser();
         //Sinon création du User
-        if ($cred->getUser() == null){
+        if ($cred->getUser() == null) {
             $user = new User();
         }
         //Faire la OneToOne entre l'objet Credentials et le nouvel objet User
@@ -58,32 +57,29 @@ class UserController extends AbstractController
             $em->flush();
             return $this->redirectToRoute('home_index');
         }
-        return $this->render('user/editMyProfil.html.twig',['form'=> $form]);
+        return $this->render('user/editMyProfil.html.twig', ['form' => $form]);
     }
 
     #[Route('/new', name: 'app_user_new')]
-    public function new(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface
-    $userPasswordHasher): Response
+    public function new(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $user = new User();
         $form = $this->createForm(AdminType::class, $user);
-        //$credentials = new Credentials();
-        //$credentials->setUser($user);
-
-        //$formReg = $this->createForm(RegistrationFormType::class, $credentials);
 
         $form->handleRequest($request);
-        //$formReg->handleRequest($request);
+
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $credentials =  $user->getCredentials();
+            $credentials = $user->getCredentials();
             $credentials->setPassword(
-                    $userPasswordHasher->hashPassword(
-                        $credentials,
-                        $form->get('credentials')->get('plainPassword')->getData()
-                    )
-                );
-
+                $userPasswordHasher->hashPassword(
+                    $credentials,
+                    $form->get('credentials')->get('plainPassword')->getData()
+                )
+            );
+            if ($form->get('credentials')->get('isAdmin')->getData()) {
+                $credentials->setRoles(['ROLE_ADMIN']);
+            }
             $em->persist($user);
             //$em->persist($credentials);
             $em->flush();
@@ -91,13 +87,24 @@ class UserController extends AbstractController
             return $this->redirectToRoute('app_user_index');
         }
 
-        return $this->render('user/new.html.twig', ['form'=>$form]);
+        return $this->render('user/new.html.twig', ['form' => $form]);
     }
 
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user): Response
+    public function show(
+        int                   $id,
+        CredentialsRepository $credRepo
+    ): Response
     {
+        //Avec le id, retrouver l'objet Credentials
+        $cred = $credRepo->findOneBy(['id' => $id]);
+        //tentative de récupération du User si il existe
+        $user = $cred->getUser();
+        //Sinon redirection
+        if ($cred->getUser() == null) {
+            $this->redirectToRoute('home_index');//TODO redirect vers une page erreur_user_not_found
+        }
         return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);

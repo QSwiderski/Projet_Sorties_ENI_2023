@@ -18,10 +18,8 @@
     {{ form_row(form.dateLimit) }}
     <button>{{ edit? 'Appliquer':'Créer' }}</button>
     {{ form_end(form) }}
-    <form>
-        <input type="button" value="Annuler" onclick="history.go(-1)">
-    </form>
     <div id="hidden">{{ path('location_create') }}</div>
+    <a href="{{ path('home_index') }}">Retour à L'accueil</a>
 {% endblock %}
 {% block javascripts %}
     <script src="{{ asset('JS/addNewLocation.js') }}"></script>

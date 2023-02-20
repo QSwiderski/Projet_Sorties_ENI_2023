@@ -5,9 +5,6 @@
 {% block body %}
 
     <h1>Create new User</h1>
-
-{#  {{ include('registration/register.html.twig') }}#}
-
     {{ form_start(form) }}
     {{ form_widget(form) }}
     <button>Valider</button>
@@ -15,16 +12,6 @@
 
 
     <a href="{{ path('app_user_index') }}">back to list</a>
-
-
-    {#
-    {{ form_start(registrationForm) }}
-    {{ form_row(registrationForm.pseudo) }}
-    {{ form_row(registrationForm.plainPassword, {
-        label: 'Password'
-    }) }}
-    {{ form_row(registrationForm.agreeTerms) }}
-    #}
 
 
 {% endblock %}

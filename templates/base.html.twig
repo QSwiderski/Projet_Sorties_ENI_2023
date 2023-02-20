@@ -19,7 +19,7 @@
         </a></div>
     <div>
         {% if (app.user) %}
-            {% if( 'ROLE_ADMIN' in app.user.roles) %}
+            {% if(is_granted('ROLE_ADMIN')) %}
             <h2><a href="{{ path('home_admin') }}">Administrer</a></h2>
             {% endif %}
             <h2><a href="{{ path('app_user_show', {'id': app.user.id}) }}">{{ app.user.pseudo }}</a></h2>

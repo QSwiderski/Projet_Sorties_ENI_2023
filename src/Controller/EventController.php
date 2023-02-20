@@ -35,7 +35,7 @@ class EventController extends AbstractController
 
     #[Route('/new', name: '_create')]
     public function create(
-        CredentialsRepository $credRepo,
+        CredentialsRepository  $credRepo,
         EntityManagerInterface $em,
         Request                $request
     ): Response
@@ -43,29 +43,13 @@ class EventController extends AbstractController
         //trouver le pseudo loggué en session
         $pseudo = $this->getUser()->getUserIdentifier();
         //en trouver le user lié en DB
-        $organizer = $credRepo->findOneBy(['pseudo'=>$pseudo]);
-
-        // On cherche les data en requete le cas échéant
+        $organizer = $credRepo->findOneBy(['pseudo' => $pseudo])->getUser();
         $event = new Event();
-        $fromLoc = false;
-        $keys = ['mem_name', 'mem_dateStart', 'mem_dateFinish', 'mem_dateLimit', 'mem_peopleMax', 'mem_description'];
-        //on memorise chaque élément, en vérifiant au passage si le moindre d'entre eux est non null
-        $values = new ArrayCollection();
-        foreach ($keys as $key) {
-            $value= $request->request->get($key);
-            $values[$key]=$value;
-            if ($value !=null && $value!== '') {
-                $fromLoc = true;
-            }
-        }
 
-        if($fromLoc){
-            dd($values);
-        }
         //on gère le formulaire normal de Event
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid() && $form->get('event_location')->getData()!=null) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $event->setOrganizer($organizer);
             $em->persist($event);
             $em->flush();
@@ -109,14 +93,14 @@ class EventController extends AbstractController
         $this->addFlash('success', 'Votre modification est bien enregistrée');
         return $this->render('event/create.html.twig', [
             'form' => $form,
-            'edit' =>true
+            'edit' => true
         ]);
     }
 
     #[Route('/remove/{id}', name: '_remove')]
     public function remove(
-        int             $id,
-        EventRepository $evRepo,
+        int                    $id,
+        EventRepository        $evRepo,
         EntityManagerInterface $em
     ): Response
     {

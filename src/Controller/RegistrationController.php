@@ -14,22 +14,24 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $credPasswordHasher, EntityManagerInterface $entityManager): Response
     {
-        $user = new Credentials();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $cred = new Credentials();
+        $form = $this->createForm(RegistrationFormType::class, $cred);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
+            $cred->setPassword(
+                $credPasswordHasher->hashPassword(
+                    $cred,
                     $form->get('plainPassword')->getData()
                 )
             );
-
-            $entityManager->persist($user);
+            if ($form->get('isAdmin')->getData()) {
+                $cred->setRoles(['ROLE_ADMIN']);
+            }
+            $entityManager->persist($cred);
             $entityManager->flush();
             // do anything else you need here, like send an email
 

@@ -5,7 +5,9 @@ namespace App\Form;
 use App\Entity\Credentials;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,6 +20,11 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('isAdmin', CheckboxType::class,[
+                'label'=>'Donner les droits administrateur',
+                'mapped'=>false,
+                'required'=>false
+            ])
             ->add('Pseudo')
             ->add('plainPassword', RepeatedType::class, [
                 // instead of being set onto the object directly,
