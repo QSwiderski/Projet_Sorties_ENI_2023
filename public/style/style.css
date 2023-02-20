@@ -28,3 +28,6 @@ header{
 header>div{
     display: inline-block ;
 }
+.hidden{
+    display: none;
+}

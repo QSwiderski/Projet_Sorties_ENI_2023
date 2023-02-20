@@ -3,11 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Event;
-use App\Entity\User;
 use App\Form\EventType;
+use App\Repository\CredentialsRepository;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,17 +35,37 @@ class EventController extends AbstractController
 
     #[Route('/new', name: '_create')]
     public function create(
-        UserRepository         $userRepo,
+        CredentialsRepository $credRepo,
         EntityManagerInterface $em,
         Request                $request
     ): Response
     {
-        $organizer = $userRepo->find(14);//BOUCHON SA MERE
+        //trouver le pseudo loggué en session
+        $pseudo = $this->getUser()->getUserIdentifier();
+        //en trouver le user lié en DB
+        $organizer = $credRepo->findOneBy(['pseudo'=>$pseudo]);
 
+        // On cherche les data en requete le cas échéant
         $event = new Event();
+        $fromLoc = false;
+        $keys = ['mem_name', 'mem_dateStart', 'mem_dateFinish', 'mem_dateLimit', 'mem_peopleMax', 'mem_description'];
+        //on memorise chaque élément, en vérifiant au passage si le moindre d'entre eux est non null
+        $values = new ArrayCollection();
+        foreach ($keys as $key) {
+            $value= $request->request->get($key);
+            $values[$key]=$value;
+            if ($value !=null && $value!== '') {
+                $fromLoc = true;
+            }
+        }
+
+        if($fromLoc){
+            dd($values);
+        }
+        //on gère le formulaire normal de Event
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && $form->get('event_location')->getData()!=null) {
             $event->setOrganizer($organizer);
             $em->persist($event);
             $em->flush();
@@ -72,7 +93,6 @@ class EventController extends AbstractController
     #[Route('/edit/{id}', name: '_edit')]
     public function edit(
         int                    $id,
-        UserRepository         $userRepo,
         EntityManagerInterface $em,
         Request                $request,
         EventRepository        $evRepo
@@ -81,7 +101,6 @@ class EventController extends AbstractController
         $event = $evRepo->findOneBy(['id' => $id]);
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
-        $title = 'texte '.random(0,10);
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($event);
             $em->flush();
