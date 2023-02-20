@@ -23,22 +23,31 @@ class SchoolController extends AbstractController
         Request                $request
     ): Response
     {
+        //Pour créer une school dont le formulaire aura besoin
         $school = new School();
 
+        //Je créer une instance du formulaire à partir d'une instance de l'entité School
         $schoolForm = $this->createForm(SchoolType::class, $school);
 
+        //L'equivalent du $GET ou $Post en PHP native. Méthode proposé par symfony pour faciliter
         $schoolForm->handleRequest(($request));
 
         if ($schoolForm->isSubmitted()) {
             $em->persist($school);
             $em->flush();
+            //redirection souhaité lorsqu'on a cliquer sur le bouton "Submit"
             return $this->redirectToRoute('school_list');
         };
-
+        //Il sert à afficher. Comme le formulaire a été créer dans le controlleur,
+        //il faut l'envoyer au twig pour qu'il soit affiché
         return $this->render(
+
+        /*  "modify" et "tittle" c'est pour renvoyer sur un seul et même qui create mais pour que l'écran affiche
+        "Enregistrer la modification" ou "Enregistrer" en fonction de s'il est en modif ou création voir code suivant généré sur le twig create:
+        <button>{% if (modify) %} Enregistrer la modification {% else %} Enregistrer {% endif %}</button>*/
             'school/create.html.twig', ['schoolForm' => $schoolForm,
-                'modify' => false,
-                'title' => 'Créer']);
+            'modify' => false,
+            'title' => 'Créer']);
     }
 
     #[Route('/createwithname/', name: '_createwithname')]
@@ -47,59 +56,45 @@ class SchoolController extends AbstractController
         Request                $request,
     ): Response
     {
-        $name = $request->query->get('NomSchool','Merci de définir un nom');
-        if ($name==""){
-            $name='Merci de définir un nom';
+        $name = $request->query->get('NomSchool', 'Merci de définir un nom');
+        if ($name == "") {
+            $name = 'Merci de définir un nom';
         }
 
         $school = new School();
         $school->setName($name);
         $schoolForm = $this->createForm(SchoolType::class, $school);
-
         $schoolForm->handleRequest(($request));
 
-        if ($schoolForm->isSubmitted() && $school->getName()!='Merci de définir un nom') {
+        if ($schoolForm->isSubmitted() && $school->getName() != 'Merci de définir un nom') {
             $em->persist($school);
             $em->flush();
             return $this->redirectToRoute('school_list');
         };
 
         return $this->render(
-            'school/create.html.twig', ['schoolForm' => $schoolForm, 'modify'=>false]);
+            'school/create.html.twig', ['schoolForm' => $schoolForm, 'modify' => false]);
     }
 
     #[Route('/', name: '_list')]
     public function list(
         SchoolRepository $schoolRepository,
-        Request $request
-    ): Response
+        Request          $request,
+        ): Response
     {
-        $schools = $request->query->get('schools');
-        if ($schools==null){
+        $research = $request->query->get('Research');
+        if ($research == null) {
             $schools = $schoolRepository->findAll();
+        } else {
+            $schools = $schoolRepository->researchByName($research);
         }
         return $this->render('school/list.html.twig',
             [
-                "schools" => $schools
-            ]);
-    }
-
-    #[Route('/research', name: '_listeresearch')]
-    public function listeResearch(
-
-        SchoolRepository $schoolRepository,
-        EntityManagerInterface $em,
-        Request $request,
-    ): Response
-    {
-        $research = $request->query->get('Research');
-        $schools = $schoolRepository->findBy(['name' => $research]);
-        if ($schools==null){$schools='VIDE';}
-        return $this->redirectToRoute('school_list',
-            [
                 "schools" => $schools,
+                'saisie' => $research
             ]);
     }
+
 
     #[Route("/delete/{id}", name: '_delete', requirements: ["id" => '\d+'])]
     public function delete(Request                $request,
@@ -107,7 +102,6 @@ class SchoolController extends AbstractController
                            EntityManagerInterface $em,
                            SchoolRepository       $schoolRepository)
     {
-
         $school = $schoolRepository->find($id);
         $em->remove($school);
         $em->flush();
@@ -124,7 +118,7 @@ class SchoolController extends AbstractController
         Request                $request
     ): Response
     {
-        $school = $schoolRepository->findOneBy(['id' => $id]);
+        $school = $schoolRepository->findOneBy(["id" => $id]);
         $schoolForm = $this->createForm(SchoolType::class, $school);
         $schoolForm->handleRequest($request);
         if ($schoolForm->isSubmitted() && $schoolForm->isValid()) {
@@ -138,6 +132,5 @@ class SchoolController extends AbstractController
             'modify' => true,
             'title' => 'Modification'
         ]);
-
     }
-    }
+}

@@ -6,6 +6,7 @@
     <h2>{% if (modify) %}Modifier {% else %}Ajouter un site{% endif %}</h2>
         {{ form_start(schoolForm) }}
 
+        {# Les inputs sont les attribut (name, lattitude etc...) de l'instance $school #}
         <p>Nom du site : {{ form_widget(schoolForm.name) }}</p>
         <p>Latitude : {{ form_widget(schoolForm.latitude) }}</p>
         <p>Longitude : {{ form_widget(schoolForm.longitude) }}</p>

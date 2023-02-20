@@ -2,12 +2,15 @@
 
 {% block body %}
     <h2>Gérer les sites</h2>
-
-    <form action={{ path('school_listeresearch') }} method="GET" name="Formulaire">
-        Le nom contient: <input name="Research" type="text" id="Research" size="30">
-        <input type="submit" value="Envoyer">
+    <h3>Filtrer les sites</h3>
+    <form action={{ path('school_list') }} method="GET" name="Formulaire">
+        Le nom contient: <input name="Research" type="text" id="Research" size="30" >
+        <input type="submit" value="Rechercher">
     </form>
            <br>
+    {%  if(saisie) %}
+    <p>Vous avez cherché {{ saisie }}</p>
+    {% endif %}
 
     <table>
         <tr>
