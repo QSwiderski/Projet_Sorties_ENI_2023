@@ -14,19 +14,26 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/admin/school', name: 'school')]
 class SchoolController extends AbstractController
 {
-    /*
-     * voir toutes les écoles
-     * (pas de vue une école à la fois)
-     */
+       /*
+        * voir toutes les écoles
+        * (pas de vue une école à la fois)
+        */
     #[Route('/', name: '_index')]
     public function list(
         SchoolRepository $schoolRepository,
+        Request          $request,
     ): Response
     {
-        $schools = $schoolRepository->findAll();
+        $research = $request->query->get('Research');
+        if ($research == null) {
+            $schools = $schoolRepository->findAll();
+        } else {
+            $schools = $schoolRepository->researchByName($research);
+        }
         return $this->render('school/list.html.twig',
             [
-                "schools" => $schools
+                "schools" => $schools,
+                'saisie' => $research
             ]);
     }
 
@@ -56,6 +63,33 @@ class SchoolController extends AbstractController
             'modify' => false,
             'title' => 'Créer']);
     }
+
+    #[Route('/createwithname/', name: '_createwithname')]
+    public function createSchoolWithName(
+        EntityManagerInterface $em,
+        Request                $request,
+    ): Response
+    {
+        $name = $request->query->get('NomSchool', 'Merci de définir un nom');
+        if ($name == "") {
+            $name = 'Merci de définir un nom';
+        }
+
+        $school = new School();
+        $school->setName($name);
+        $schoolForm = $this->createForm(SchoolType::class, $school);
+        $schoolForm->handleRequest(($request));
+
+        if ($schoolForm->isSubmitted() && $school->getName() != 'Merci de définir un nom') {
+            $em->persist($school);
+            $em->flush();
+            return $this->redirectToRoute('school_index');
+        };
+
+        return $this->render(
+            'school/create.html.twig', ['schoolForm' => $schoolForm, 'modify' => false]);
+    }
+
 
     /*
      * Modifier une école par id

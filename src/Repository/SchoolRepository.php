@@ -11,7 +11,6 @@ use Doctrine\Persistence\ManagerRegistry;
  *
  * @method School|null find($id, $lockMode = null, $lockVersion = null)
  * @method School|null findOneBy(array $criteria, array $orderBy = null)
- * @method School[]    findAll()
  * @method School[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class SchoolRepository extends ServiceEntityRepository
@@ -37,6 +36,31 @@ class SchoolRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function researchByName($name): array
+    {$name='%'.$name.'%';
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.name LIKE :val')
+            ->setParameter('val', $name)
+            ->orderBy('s.name', 'ASC')
+            ->setMaxResults(30)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /*
+    *@override
+    */
+    public function findAll(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->orderBy('s.name', 'ASC')
+            ->setMaxResults(30)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
 //    /**
