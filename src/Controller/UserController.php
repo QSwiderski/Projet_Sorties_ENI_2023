@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserEditType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,7 +14,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/valid/user', name: ('user'))]
+#[Route('/user', name: ('user'))]
 class UserController extends AbstractController
 {
     /*
@@ -30,6 +31,7 @@ class UserController extends AbstractController
     /*
      * créer un user
      */
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/create', name: '_create')]
     public function new(Request                     $request,
                         EntityManagerInterface      $em,
@@ -61,6 +63,7 @@ class UserController extends AbstractController
     /*
      * voir un user par id
      */
+    #[IsGranted('ROLE_USER_VALID')]
     #[Route('/{id}', name: '_show', methods: ['GET'])]
     public function show(
         int            $id,
@@ -68,7 +71,10 @@ class UserController extends AbstractController
     ): Response
     {   //Avec le id, retrouver l'utilisateur'
         $user = $userRepo->findOneBy(['id' => $id]);
-        //Sinon redirection
+        if ($user==null){
+            return $this->redirectToRoute('home_index');
+        }
+
         return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);
@@ -77,6 +83,7 @@ class UserController extends AbstractController
     /*
      * modifier un user par id
      */
+    #[IsGranted('ROLE_USER')]
     #[Route('/edit/{id}', name: '_edit', requirements: ['id' => '\d+'])]
     public function editProfil(Request                $request,
                                EntityManagerInterface $em,
@@ -93,23 +100,27 @@ class UserController extends AbstractController
             $this->redirectToRoute('home_index');
         }
 
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserEditType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if($user->getName()!=null && $user->getSurname()!=null){
-                $user->setRoles(['ROLE_VALID']);
+            if ($user->getName() != null && $user->getSurname() != null) {
+                $user->setRoles(['ROLE_USER_VALID']);
             }
             $em->persist($user);
             $em->flush();
             return $this->redirectToRoute('home_index');
         }
-        return $this->render('user/editMyProfil.html.twig', ['form' => $form]);
+        return $this->render('user/edit.html.twig', [
+            'form' => $form,
+            'mail' => $user->getEmail()
+        ]);
     }
 
     /*
      * supprimer un compte avec l'id
      */
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/delete/{id}', name: '_delete')]
     public function delete(int                    $id,
                            UserRepository         $userRepo,

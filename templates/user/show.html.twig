@@ -3,19 +3,12 @@
 {% block title %}User{% endblock %}
 
 {% block body %}
-    <h1>User</h1>
-
+    <h1>Voir un utilisateur</h1>
     <div>
-        <label for="user_id">Id</label>:
-        <p id="user_id">{{ user.id }}</p>
-    </div>
-    <div>
-        <label for="user_name">Name</label>:
-        <p id="user_name">{{ user.name?user.name:'No name' }}</p>
-    </div>
-    <div>
-        <label for="user_surname">Surname</label>:
+        <label for="user_surname">Prénom</label>:
         <p id="user_surname">{{ user.surname?user.surname:'No Surname' }}</p>
+        <label for="user_name">Nom</label>:
+        <p id="user_name">{{ user.name?user.name:'No name' }}</p>
     </div>
     <div>
         <label for='user_phone'>Phone</label>:

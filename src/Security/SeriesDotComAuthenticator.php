@@ -45,7 +45,7 @@ class SeriesDotComAuthenticator extends AbstractLoginFormAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-        return new RedirectResponse($this->urlGenerator->generate('event_index'));
+        return new RedirectResponse($this->urlGenerator->generate('home_index'));
     }
 
     protected function getLoginUrl(Request $request): string

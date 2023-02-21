@@ -69,6 +69,9 @@ class SchoolController extends AbstractController
     ): Response
     {
         $school = $schoolRepository->findOneBy(['id' => $id]);
+        if ($school ==null){
+            return $this->redirectToRoute('school_index');
+        }
         $schoolForm = $this->createForm(SchoolType::class, $school);
         $schoolForm->handleRequest($request);
         if ($schoolForm->isSubmitted() && $schoolForm->isValid()) {

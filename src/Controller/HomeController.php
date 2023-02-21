@@ -21,8 +21,10 @@ class HomeController extends AbstractController
         if (!$this->isGranted('ROLE_USER')) {
             return $this->redirectToRoute('event_index');
         }
+        //chercher le id de user
+        $user = $userRepo->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
         if (!$this->isGranted('ROLE_USER_VALID')) {
-            return $this->redirectToRoute('user_edit');
+            return $this->redirectToRoute('user_edit',['id'=>$user->getId()]);
         }
         return $this->redirectToRoute('event_index');
         

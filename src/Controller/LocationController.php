@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
 use App\Entity\Location;
 use App\Form\LocationType;
+use App\Memory;
 use App\Repository\LocationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,6 +42,9 @@ class LocationController extends AbstractController
     ): Response
     {
         $location = $locRepo->findOneBy(['id' => $id]);
+        if ($location == null) {
+            return $this->redirectToRoute('location_index');
+        }
         return $this->render('location/unique.html.twig', [
             'location' => $location
         ]);
@@ -51,11 +56,13 @@ class LocationController extends AbstractController
     #[Route('/create', name: '_create')]
     public function create(
         EntityManagerInterface $em,
-        Request                $request
+        Request                $request,
+        Memory                 $mem
     ): Response
     {
         $location = new Location();
-
+        //arrivant de event_create on retient les infos
+        $mem->write($this->getUser()->getUserIdentifier(), $request->request);
         //on gère le formulaire normal de lieu
         $form = $this->createForm(LocationType::class, $location);
         $form->handleRequest($request);
@@ -65,9 +72,11 @@ class LocationController extends AbstractController
             $this->addFlash('success', 'Bien enregistré');
 
             //TODO cherche si on requete location_create depuis une création d'event
-
-            //on retourne à l'affichage index (sur adminpanel)
-            return $this->redirectToRoute('location_show', ["id" => $location->getId()]);
+            if ($this->isGranted('ROLE_ADMIN')) {
+                //on retourne à l'affichage index (sur adminpanel)
+                return $this->redirectToRoute('location_show', ["id" => $location->getId()]);
+            }
+            return $this->redirectToRoute('event_create');
         }
 
         return $this->render('location/create.html.twig', [

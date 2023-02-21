@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Event;
 use App\Form\EventDeleteType;
 use App\Form\EventType;
+use App\Memory;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,10 +27,36 @@ class EventController extends AbstractController
     ): Response
     {
         $events = $evRepo->findAll();
+        $event = $evRepo->findOneBy(['id' => '2']);
         return $this->render('event/index.html.twig', [
             'events' => $events
         ]);
     }
+
+    /*
+    * publier une sortie
+    */
+    #[IsGranted('ROLE_USER_VALID')]
+    #[Route('/publish/{id}', name: '_publish', requirements: ['id' => '\d+'])]
+    public function publish(
+        int                    $id,
+        EventRepository        $evRepo,
+        EntityManagerInterface $em
+    ): Response
+    {
+        //retrouver l'event en database
+        $event = $evRepo->find($id);
+        //si ni admin ni son propre event retour case départ
+        if ($event == null || !$this->isGranted('ROLE_ADMIN') &&
+            $this->getUser()->getUserIdentifier() !== $event->getOrganizer()->getEmail()) {
+            return $this->redirectToRoute('home_index');
+        }
+        $event->setPublished(true);
+        $em->persist($event);
+        $em->flush();
+        return $this->redirectToRoute('home_index');
+    }
+
 
     /*
      * voir une sortie par id
@@ -55,14 +82,15 @@ class EventController extends AbstractController
     public function create(
         UserRepository         $userRepo,
         EntityManagerInterface $em,
-        Request                $request
+        Request                $request,
+        Memory                 $mem
     ): Response
     {
         //trouver le mail loggué en session
         $mail = $this->getUser()->getUserIdentifier();
-        $organizer = $userRepo->findOneBy(['email'=>$mail]);
-        $event = new Event();
-
+        $organizer = $userRepo->findOneBy(['email' => $mail]);
+        //on récupere un new event() qui peux avoir des infos déjà renseignées
+        $event = $mem->createAnEvent($mail);
         //on gère le formulaire normal de Event
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
@@ -96,12 +124,10 @@ class EventController extends AbstractController
 
         //retrouver l'event en database
         $event = $evRepo->find($id);
-        //en retrouver le créateur
-        $orga = $userRepo->findOneBy(['pseudo', $event->getOrganizer()]);
         //si ni admin ni son propre event retour case départ
-        if (!$this->isGranted('ROLE_ADMIN') &&
-            !$this->getUser()->getUserIdentifier() == $orga->getEmail()) {
-            $this->redirectToRoute('home_index');
+        if ($event == null || !$this->isGranted('ROLE_ADMIN') &&
+            $this->getUser()->getUserIdentifier() !== $event->getOrganizer()->getEmail()) {
+            return $this->redirectToRoute('home_index');
         }
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
@@ -127,7 +153,7 @@ class EventController extends AbstractController
         EventRepository        $evRepo,
         EntityManagerInterface $em,
         UserRepository         $userRepo,
-        Request $request
+        Request                $request
     ): Response
     {
         //retrouver l'event en database
@@ -139,7 +165,6 @@ class EventController extends AbstractController
         }
         //on fait remplir la raison de suppression
         $form = $this->createForm(EventDeleteType::class);
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             //ajout de la raison de suppression
@@ -153,9 +178,9 @@ class EventController extends AbstractController
             $today = json_encode($today->format('d-m-Y H:i:s'));
 
             //écriture du json dans le fichier archive
-            $archiveFile=fopen(realpath( "../public/archives.txt" ),'r+');
-                        fwrite($archiveFile,$today);
-            fwrite($archiveFile,$json);
+            $archiveFile = fopen(realpath("../public/archives.txt"), 'r+');
+            fwrite($archiveFile, $today);
+            fwrite($archiveFile, $json);
             fclose($archiveFile);
 
             //suppression de l'objet en db
@@ -164,10 +189,33 @@ class EventController extends AbstractController
             return $this->redirectToRoute('event_index');
         }
         return $this->render('event/delete.html.twig', [
-            'event'=>$event,
+            'event' => $event,
             'delete_form' => $form,
             'edit' => true
         ]);
     }
 
+    /*
+     * ajouter un utilisateur à un event
+     */
+    #[IsGranted('ROLE_USER_VALID')]
+    #[Route('/apply/{id}', name: '_apply')]
+    public function apply(
+        int                    $id,
+        EventRepository        $evRepo,
+        UserRepository         $userRepo,
+        EntityManagerInterface $em
+    ): Response
+    {
+        //retrouver l'event en database
+        $event = $evRepo->find($id);
+        $user = $userRepo->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
+        //ajout/retrait de l'user dans l'event
+        $event = $event->apply($user);
+        $em->persist($event);
+        $em->flush();
+        $this->addFlash('success', 'Votre modification est bien enregistrée');
+
+        return $this->redirectToRoute('home_index');
+    }
 }
