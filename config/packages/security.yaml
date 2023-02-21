@@ -38,8 +38,8 @@ security:
         ROLE_ADMIN: [ ROLE_USER_VALID,ROLE_USER ]
     access_control:
          - { path: ^/admin, roles: ROLE_ADMIN }
-         - { path: ^/valid, roles: [ROLE_VALID,ROLE_ADMIN] }
-         - { path: ^/fill, roles: [ROLE_USER,ROLE_VALID,ROLE_ADMIN] }
+         - { path: ^/valid, roles: [ROLE_USER_VALID,ROLE_ADMIN] }
+         - { path: ^/fill, roles: [ROLE_USER,ROLE_USER_VALID,ROLE_ADMIN] }
 
 when@test:
     security:

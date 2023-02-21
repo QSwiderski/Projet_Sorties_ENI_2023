@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\EventRepository;
+use App\toolKitBQP;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -48,6 +49,9 @@ class Event implements JsonSerializable
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'events')]
     private Collection $users;
+
+    #[ORM\Column(nullable: false)]
+    private ?bool $isPublished = false;
 
     public function __construct()
     {
@@ -213,15 +217,17 @@ class Event implements JsonSerializable
             }
         }
         if ($alreadyin){
-            $this->users->remove($applyUser);
-        }else{
-            $this->users->add($applyUser);
+            $this->removeUser($applyUser);
+        }else {
+            $this->addUser($applyUser);
         }
+        return $this;
     }
 
     public function jsonSerialize(): mixed
     {
-        return $this->turnToUTF8([
+        $tool = new toolKitBQP();
+        return $tool->turnToUTF8([
             'organizer' => $this->organizer->getEmail(),
             'school'=> $this->organizer->getSchool()->getName(),
             'locationID' => $this->location->getId(),
@@ -236,22 +242,35 @@ class Event implements JsonSerializable
         ]);
     }
 
-    /*
-     *transform les entités (objet ou string) au format UTF 8
-     */
-    function turnToUTF8($d) {
-        if (is_array($d))
-            foreach ($d as $k => $v)
-                $d[$k] = $this->turnToUTF8($v);
 
-        else if(is_object($d))
-            foreach ($d as $k => $v)
-                $d->$k = $this->turnToUTF8($v);
 
-        else
-            return utf8_encode($d);
+    public function getState(): string
+    {
+        $today=new \DateTime('now');
+        if($this->dateFinish < $today){
+            return 'FINISHED';
+        }else if($this->dateStart < $today){
+            return 'STARTED';
+        }else if($this->dateLimit < $today){
+            return 'CLOSED';
+        }else if($this->isPublished){
+            return 'PUBLISHED';
+        }else{
+            return 'UNPUBLISHED';
+        }
 
-        return $d;
+    }
+
+    public function isPublished(): ?bool
+    {
+        return $this->isPublished;
+    }
+
+    public function setPublished(bool $isPublished): self
+    {
+        $this->isPublished = $isPublished;
+
+        return $this;
     }
 
 

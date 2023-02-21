@@ -10,7 +10,7 @@
         <div>fin : {{ event.dateFinish.format('d/m/Y H:i') }}</div>
         <div>clôture : {{ event.dateLimit.format('d/m/Y H:i') }}</div>
         <div>places : {{ event.peopleMax }}</div>
-        <div>etat : //TODO etat</div>
+        <div>etat : {{ event.state }}</div>
         <div>organisateur : {{ event.organizer.pseudo }}</div>
         <div> Participants</div>
         {% for user in event.users %}
