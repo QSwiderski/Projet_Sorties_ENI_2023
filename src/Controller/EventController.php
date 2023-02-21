@@ -96,12 +96,10 @@ class EventController extends AbstractController
 
         //retrouver l'event en database
         $event = $evRepo->find($id);
-        //en retrouver le créateur
-        $orga = $userRepo->findOneBy(['pseudo', $event->getOrganizer()]);
         //si ni admin ni son propre event retour case départ
-        if (!$this->isGranted('ROLE_ADMIN') &&
-            !$this->getUser()->getUserIdentifier() == $orga->getEmail()) {
-            $this->redirectToRoute('home_index');
+        if ($event==null || !$this->isGranted('ROLE_ADMIN') &&
+            $this->getUser()->getUserIdentifier() !== $event->getOrganizer()->getEmail()) {
+            return $this->redirectToRoute('home_index');
         }
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
@@ -170,4 +168,23 @@ class EventController extends AbstractController
         ]);
     }
 
+    /*
+     * ajouter un utilisateur à un event
+     */
+    #[IsGranted('ROLE_USER_VALID')]
+    #[Route('/apply/{id}', name: '_apply')]
+    public function apply(
+        int                    $id,
+        EventRepository        $evRepo,
+        UserRepository         $userRepo
+    ): Response
+    {
+        //retrouver l'event en database
+        $event = $evRepo->find($id);
+        $user = $userRepo->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
+        //ajout/retrait de l'user dans l'event
+        $event->apply($user);
+        $this->addFlash('success', 'Votre modification est bien enregistrée');
+        return $this->redirectToRoute('home_index');
+    }
 }

@@ -202,6 +202,23 @@ class Event implements JsonSerializable
         return $usersAsArray;
     }
 
+    /*
+     * ajouter-retirer un utilisateur
+     */
+    public function apply($applyUser){
+        $alreadyin=false;
+        foreach($this->users as $user){
+            if ($applyUser->getId() == $user->getId()){
+                $alreadyin = true;
+            }
+        }
+        if ($alreadyin){
+            $this->users->remove($applyUser);
+        }else{
+            $this->users->add($applyUser);
+        }
+    }
+
     public function jsonSerialize(): mixed
     {
         return $this->turnToUTF8([
@@ -236,4 +253,6 @@ class Event implements JsonSerializable
 
         return $d;
     }
+
+
 }

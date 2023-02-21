@@ -40,6 +40,9 @@ class LocationController extends AbstractController
     ): Response
     {
         $location = $locRepo->findOneBy(['id' => $id]);
+        if($location == null){
+            return $this->redirectToRoute('location_index');
+        }
         return $this->render('location/unique.html.twig', [
             'location' => $location
         ]);
