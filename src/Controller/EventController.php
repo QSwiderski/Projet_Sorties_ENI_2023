@@ -3,24 +3,39 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Form\EventDeleteType;
 use App\Form\EventType;
-use App\Repository\CredentialsRepository;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
-use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/event', name: 'event')]
 class EventController extends AbstractController
 {
+    /*
+     * voir toutes les sorties
+     */
+    #[Route('/', name: '_index')]
+    public function showAll(
+        EventRepository $evRepo
+    ): Response
+    {
+        $events = $evRepo->findAll();
+        return $this->render('event/index.html.twig', [
+            'events' => $events
+        ]);
+    }
 
-
-    #[Route('/{id}', name: '_showOne', requirements: ['id' => '\d+'])]
+    /*
+     * voir une sortie par id
+     */
+    #[IsGranted('ROLE_USER_VALID')]
+    #[Route('/{id}', name: '_show', requirements: ['id' => '\d+'])]
     public function showOne(
         int             $id,
         EventRepository $evRepo
@@ -32,18 +47,20 @@ class EventController extends AbstractController
         ]);
     }
 
-
+    /*
+     * Créer une sortie
+     */
+    #[IsGranted('ROLE_USER_VALID')]
     #[Route('/new', name: '_create')]
     public function create(
-        CredentialsRepository  $credRepo,
+        UserRepository         $userRepo,
         EntityManagerInterface $em,
         Request                $request
     ): Response
     {
-        //trouver le pseudo loggué en session
-        $pseudo = $this->getUser()->getUserIdentifier();
-        //en trouver le user lié en DB
-        $organizer = $credRepo->findOneBy(['pseudo' => $pseudo])->getUser();
+        //trouver le mail loggué en session
+        $mail = $this->getUser()->getUserIdentifier();
+        $organizer = $userRepo->findOneBy(['email'=>$mail]);
         $event = new Event();
 
         //on gère le formulaire normal de Event
@@ -53,7 +70,7 @@ class EventController extends AbstractController
             $event->setOrganizer($organizer);
             $em->persist($event);
             $em->flush();
-            return $this->redirectToRoute('event_showOne', ["id" => $event->getId()]);
+            return $this->redirectToRoute('event_show', ["id" => $event->getId()]);
         }
         $this->addFlash('success', 'Votre evenement est bien enregistré');
         return $this->render('event/create.html.twig', [
@@ -63,32 +80,35 @@ class EventController extends AbstractController
         );
     }
 
-    #[Route('/', name: '_showAll')]
-    public function showAll(
-        EventRepository $evRepo
-    ): Response
-    {
-        $events = $evRepo->findAll();
-        return $this->render('event/index.html.twig', [
-            'events' => $events
-        ]);
-    }
-
+    /*
+     * modifier une sortie par id
+     */
+    #[IsGranted('ROLE_USER_VALID')]
     #[Route('/edit/{id}', name: '_edit')]
     public function edit(
         int                    $id,
         EntityManagerInterface $em,
         Request                $request,
-        EventRepository        $evRepo
+        EventRepository        $evRepo,
+        UserRepository         $userRepo
     ): Response
     {
-        $event = $evRepo->findOneBy(['id' => $id]);
+
+        //retrouver l'event en database
+        $event = $evRepo->find($id);
+        //en retrouver le créateur
+        $orga = $userRepo->findOneBy(['pseudo', $event->getOrganizer()]);
+        //si ni admin ni son propre event retour case départ
+        if (!$this->isGranted('ROLE_ADMIN') &&
+            !$this->getUser()->getUserIdentifier() == $orga->getEmail()) {
+            $this->redirectToRoute('home_index');
+        }
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($event);
             $em->flush();
-            return $this->redirectToRoute('event_showOne', ["id" => $event->getId()]);
+            return $this->redirectToRoute('event_show', ["id" => $event->getId()]);
         }
         $this->addFlash('success', 'Votre modification est bien enregistrée');
         return $this->render('event/create.html.twig', [
@@ -97,17 +117,57 @@ class EventController extends AbstractController
         ]);
     }
 
+    /*
+     * supprimer un évenement
+     */
+    #[IsGranted('ROLE_USER_VALID')]
     #[Route('/remove/{id}', name: '_remove')]
     public function remove(
         int                    $id,
         EventRepository        $evRepo,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserRepository         $userRepo,
+        Request $request
     ): Response
     {
-        $event = $evRepo->findOneBy(['id' => $id]);
-        $em->remove($event);
-        $em->flush();
-        return $this->redirectToRoute('event_showAll');
+        //retrouver l'event en database
+        $event = $evRepo->find($id);;
+        //si ni admin ni son propre event retour case départ
+        if (!$this->isGranted('ROLE_ADMIN') &&
+            !$this->getUser()->getUserIdentifier() == $event->getOrganizer()->getEmail()) {
+            $this->redirectToRoute('home_index');
+        }
+        //on fait remplir la raison de suppression
+        $form = $this->createForm(EventDeleteType::class);
 
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            //ajout de la raison de suppression
+            $event->setCancelReason($form->get('cancel_reason')->getData());
+
+            //TODO envoyer un mail aux participants  function cancel($event)
+
+            //transformation en json
+            $json = json_encode($event);
+            $today = new \DateTime('now');
+            $today = json_encode($today->format('d-m-Y H:i:s'));
+
+            //écriture du json dans le fichier archive
+            $archiveFile=fopen(realpath( "../public/archives.txt" ),'r+');
+                        fwrite($archiveFile,$today);
+            fwrite($archiveFile,$json);
+            fclose($archiveFile);
+
+            //suppression de l'objet en db
+            $em->remove($event);
+            $em->flush();
+            return $this->redirectToRoute('event_index');
+        }
+        return $this->render('event/delete.html.twig', [
+            'event'=>$event,
+            'delete_form' => $form,
+            'edit' => true
+        ]);
     }
+
 }

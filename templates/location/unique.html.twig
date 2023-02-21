@@ -13,7 +13,7 @@
         <p>longitude : {{ location.longitude }}</p>
     </div>
     {% if (is_granted('ROLE_ADMIN')) %}
-        <a href="{{ path('location_showAll') }}">Retour à la liste des lieux</a>
+        <a href="{{ path('location_index') }}">Retour à la liste des lieux</a>
     {% endif %}
     <form>
         <a href="{{ path('event_create') }}">Retour à la création d'evenement</a>

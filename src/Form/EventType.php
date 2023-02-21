@@ -16,22 +16,23 @@ class EventType extends AbstractType
     {
         $builder
             ->add('name')
+            ->add('location',
+                EntityType::class,
+                [
+                    "class" => Location::class,
+                    "choice_label" => "name",
+                    "required"=>false
+                ]
+            )
+            ->add('description')
+            ->add('peopleMax')
             ->add('dateStart', DateTimeType::class, ['widget' => 'single_text',
                 'label' => 'Début de l\'evenement'])
             ->add('dateFinish', DateTimeType::class, ['widget' => 'single_text',
                 'label' => 'Fin de l\'evenement'])
             ->add('dateLimit', DateTimeType::class, ['widget' => 'single_text',
                 'label' => 'Limite des inscriptions'])
-            ->add('description')
-        ->add('peopleMax')
-        ->add('location',
-            EntityType::class,
-            [
-                "class" => Location::class,
-                "choice_label" => "name",
-                "required"=>false
-            ]
-        );
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

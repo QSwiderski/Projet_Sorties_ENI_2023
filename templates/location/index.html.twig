@@ -6,28 +6,15 @@
     <div class="container">
         <h2>Lieux de sortie :</h2>
         <a href={{ path('location_create') }}>Nouveau Lieu</a><br>
-        <table>
-            <tr>
-                <th>nom</th>
-                <th>adresse</th>
-                <th>code postal</th>
-                <th>ville</th>
-                <th>coordonnées</th>
-                <th>actions</th>
-            </tr>
             {% for location in locations %}
-                <tr>
-                    {# <div class="{{ wish.category.iconame }}"></div> #}
-                    <td><a href="{{ path('location_showOne', {'id': location.id}) }}">{{ location.name }}</a></td>
-                    <td>{{ location.adress }}</td>
-                    <td>{{ location.postcode }}</td>
-                    <td>{{ location.city }}</td>
-                    <td>{{ location.latitude }}N ; {{ location.longitude }}W</td>
-                    <td><a href={{ path('location_edit', {'id': location.id}) }}>Modifier</a>&nbsp&nbsp&nbsp<a href={{ path('location_remove',{'id':location.id}) }}>Supprimer</a></td>
-
-                </tr>
+                <div>
+                    <div><a href="{{ path('location_show', {'id': location.id}) }}">{{ location.name }}</a></div>
+                    <div>{{ location.adress }}</div>
+                    <div>{{ location.postcode }}</div>
+                    <div>{{ location.city }}</div>
+                    <div>Aux Coordonnées :{{ location.latitude }};{{ location.longitude }} <a target="_blank"  href="https://www.google.fr/maps?q={{ location.latitude }},{{ location.longitude }}">Voir sur la carte</a></div>
+                    <div><a href={{ path('location_edit', {'id': location.id}) }}>Modifier</a>&nbsp&nbsp&nbsp<a href={{ path('location_delete',{'id':location.id}) }}>Supprimer</a></div>
+                </div>
             {% endfor %}
-        </table>
     </div>
-    <input type="button" value="Retour" onclick="history.go(-1)">
 {% endblock %}

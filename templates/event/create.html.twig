@@ -4,8 +4,6 @@
 
 {% block body %}
     <h2>{{ edit? 'Modifier un ':'Creer un nouvel' }} evenement</h2>
-    <div><label for="school_name">Ecole de rattachement</label>
-        <p id="school_name">{{ app.user.user.school.name }}</p></div>
     {{ form_start(form) }}
     {{ form_start(form) }}
     {{ form_row(form.name) }}
@@ -18,6 +16,8 @@
     {{ form_row(form.dateLimit) }}
     <button>{{ edit? 'Appliquer':'Créer' }}</button>
     {{ form_end(form) }}
+    <div><label for="school_name">Ecole de rattachement</label>
+        <p id="school_name">{{ app.user.school.name }}</p></div>
     <div id="hidden">{{ path('location_create') }}</div>
     <a href="{{ path('home_index') }}">Retour à L'accueil</a>
 {% endblock %}

@@ -7,9 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
-class Event
+class Event implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -34,8 +35,8 @@ class Event
     #[ORM\Column(nullable: true)]
     private ?int $peopleMax = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'events')]
-    private Collection $users;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $cancelReason = null;
 
     #[ORM\ManyToOne(inversedBy: 'organizedEvents')]
     #[ORM\JoinColumn(nullable: false)]
@@ -45,14 +46,12 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     private ?Location $location = null;
 
-    #[ORM\Column]
-    private ?bool $isPublished;
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'events')]
+    private Collection $users;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        //on setup toujours à false par défaut. Une fois à true on ne pourra revenir en arriere.
-        $this->isPublished = false;
     }
 
     public function getId(): ?int
@@ -132,29 +131,14 @@ class Event
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
+    public function getCancelReason(): ?string
     {
-        return $this->users;
+        return $this->cancelReason;
     }
 
-    public function addUser(User $user): self
+    public function setCancelReason(?string $cancelReason): self
     {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-            $user->addEvent($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): self
-    {
-        if ($this->users->removeElement($user)) {
-            $user->removeEvent($this);
-        }
+        $this->cancelReason = $cancelReason;
 
         return $this;
     }
@@ -183,20 +167,73 @@ class Event
         return $this;
     }
 
-    public function isIsPublished(): ?bool
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
     {
-        return $this->isPublished;
+        return $this->users;
     }
 
-    public function setIsPublished(bool $isPublished): self
+    public function addUser(User $user): self
     {
-        /*
-         * On vérifie qu'on cherche à passer à true
-         * on ne peut jamais retourner à false une fois passé à true
-         */
-        if ($isPublished) {
-            $this->isPublished = true;
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addEvent($this);
         }
+
         return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeEvent($this);
+        }
+
+        return $this;
+    }
+
+    private function getUsersAsArray(){
+        $usersAsArray = [];
+        foreach($this->users as $user){
+            $usersAsArray[] = $user->getEmail();
+        }
+        return $usersAsArray;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return $this->turnToUTF8([
+            'organizer' => $this->organizer->getEmail(),
+            'school'=> $this->organizer->getSchool()->getName(),
+            'locationID' => $this->location->getId(),
+            'locationName' => $this->location->getName(),
+            'name' => $this->name,
+            'dateStart' => $this->dateStart->format('Y-m-d H:i:s'),
+            'dateFinish' => $this->dateFinish->format('Y-m-d H:i:s'),
+            'dateLimit' => $this->dateLimit->format('Y-m-d H:i:s'),
+            'description' => $this->description,
+            'peopleMax' =>$this->peopleMax,
+            'users'=> $this->getUsersAsArray()
+        ]);
+    }
+
+    /*
+     *transform les entités (objet ou string) au format UTF 8
+     */
+    function turnToUTF8($d) {
+        if (is_array($d))
+            foreach ($d as $k => $v)
+                $d[$k] = $this->turnToUTF8($v);
+
+        else if(is_object($d))
+            foreach ($d as $k => $v)
+                $d->$k = $this->turnToUTF8($v);
+
+        else
+            return utf8_encode($d);
+
+        return $d;
     }
 }

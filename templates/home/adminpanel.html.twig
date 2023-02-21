@@ -5,10 +5,10 @@
 {% block body %}
 <h1>Controles administrateur</h1>
     <h2>gestion utilisateurs</h2>
-    <a href="{{ path('app_user_index') }}">Voir tous les utilisateurs</a>
-    <a href="{{ path('app_register') }}">Créer un nouveau compte</a>
+    <a href="{{ path('user_index') }}">Voir tous les utilisateurs</a>
+    <a href="{{ path('user_create') }}">Créer un nouveau compte</a>
     <h2>gestion sites ecoles</h2>
-    <a href="{{ path('school_list') }}">Voir tous les sites</a>
+    <a href="{{ path('school_index') }}">Voir tous les sites</a>
     <h2>gestion lieux de sortie</h2>
-    <a href="{{ path('location_showAll') }}">Voir tous les lieux</a>
+    <a href="{{ path('location_index') }}">Voir tous les lieux</a>
 {% endblock %}

@@ -2,50 +2,19 @@
 
 {% block body %}
     <h2>Gérer les sites</h2>
+    <div><a href={{ path('school_create')}}>Ajouter un site</a></div>
     <h3>Filtrer les sites</h3>
-    <form action={{ path('school_list') }} method="GET" name="Formulaire">
-        Le nom contient: <input name="Research" type="text" id="Research" size="30" >
-        <input type="submit" value="Rechercher">
-    </form>
-           <br>
-    {%  if(saisie) %}
-    <p>Vous avez cherché {{ saisie }}</p>
-    {% endif %}
+    <div><label for="research">Le nom contient : </label><input type="text" id="research"><button>Rechercher</button></div>
 
-    <table>
-        <tr>
-            <th>Ville</th>
-            <th>Action</th>
+    <p>Sites de rattachement : </p>
+    {% for school in schools %}
+        <div>{{ school.name }}</div>
+        <div><a target="_blank"  href="https://www.google.fr/maps?q={{ school.latitude }},{{ school.longitude }}">Voir sur la carte</a></div>
+        <div><a href={{ path('school_delete',{'id':school.id}) }}>Supprimer</a></div>
+        <div><a href={{ path('school_modify',{'id':school.id}) }}>Modifier</a></div>
 
-        </tr>
-        {% for school in schools %}
-            <tr>
-                {# <div class="{{ wish.category.iconame }}"></div> #}
-                <td>{{ school.name }}</td>
-                <td><a href={{ path('school_delete',{'id':school.id}) }}>Supprimer | </a> <a
-                            href={{ path('school_modify',{'id':school.id}) }}>Modifier</a></td>
-            </tr>
-
-
-        {% endfor %}
-        {# <td><label for="name">Saisir un nouveau site:</label>
-            <input type="text" id="name" name="name" required
-                   minlength="1" maxlength="30" size="30"></td> #}
-
-        {#  {{ form_start(schoolForm) }}
-        <p>Saisir un nouveau site:{{ form_widget(schoolForm.name) }}</p>
-        {{ form_end(schoolForm) }} #}
-        <td>
-            <form action={{ path('school_createwithname') }} method="GET" name="Formulaire">
-                 Saisir un nouveau site: <input name="NomSchool" type="text" id="NomSchool" size="30">
-                <input type="submit" value="Envoyer">
-            </form>
-        </td>
-
-
-
-        <td><a href="{{ path('school_create') }}">Ajouter un site</a></td>
-    </table>
+        <br>
+    {% endfor %}
 {% endblock %}
 
 {% block title %}

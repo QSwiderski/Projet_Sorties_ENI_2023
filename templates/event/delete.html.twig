@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ event.name }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h2>So you want to cancel the event " {{ event.name }} "</h2>
+        <p>Due to begin on {{ event.dateStart.format('d/m/Y H:i') }}</p>
+        {{ form_start(delete_form) }}
+        {{ form_widget(delete_form) }}
+        <button>Archiver</button>
+        {{ form_end(delete_form) }}
+    </div>
+        <a href="{{ path('home_index') }}">Retour à L'accueil</a>
+{% endblock %}

@@ -2,22 +2,24 @@
 
 namespace App\Controller;
 
-use App\Entity\Event;
 use App\Entity\Location;
 use App\Form\LocationType;
 use App\Repository\LocationRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/location', name: 'location')]
+#[Route('/valid/location', name: 'location')]
 class LocationController extends AbstractController
 
 {
-    #[Route('/', name: '_showAll')]
+    /*
+     * Afficher tous les lieux
+     */
+    #[Route('/', name: '_index')]
     public function index(
         LocationRepository $locRepo
     ): Response
@@ -28,7 +30,10 @@ class LocationController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: '_showOne', requirements: ['id' => '\d+'])]
+    /*
+     * Afficher un lieu par son id
+     */
+    #[Route('/{id}', name: '_show', requirements: ['id' => '\d+'])]
     public function showOne(
         int                $id,
         LocationRepository $locRepo
@@ -40,7 +45,10 @@ class LocationController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: '_create')]
+    /*
+     * Créer un nouveau lieu
+     */
+    #[Route('/create', name: '_create')]
     public function create(
         EntityManagerInterface $em,
         Request                $request
@@ -56,24 +64,10 @@ class LocationController extends AbstractController
             $em->flush();
             $this->addFlash('success', 'Bien enregistré');
 
-            // On cherche si on requete location_create depuis une création d'event
-            $fromEvent = false;
-            $keys = ['mem_name', 'mem_dateStart', 'mem_dateFinish', 'mem_dateLimit', 'mem_peopleMax', 'mem_description'];
-            //on memorise chaque élément, en vérifiant au passage si le moindre d'entre eux est non null
-            $memvalues = [];
-            foreach ($keys as $key) {
-                $value = $request->request->get($key);
-                $memvalues[$key] = $value;
-                if ($value != null) {
-                    var_dump('value is empty');
-                    var_dump($value);
-                    //on retourne à la création d'event
-                    return $this->redirectToRoute('event_create');
-                }
-            }
+            //TODO cherche si on requete location_create depuis une création d'event
 
-            //on retourne à l'affichage showAll (sur adminpanel)
-            return $this->redirectToRoute('location_showOne', ["id" => $location->getId()]);
+            //on retourne à l'affichage index (sur adminpanel)
+            return $this->redirectToRoute('location_show', ["id" => $location->getId()]);
         }
 
         return $this->render('location/create.html.twig', [
@@ -83,6 +77,10 @@ class LocationController extends AbstractController
         );
     }
 
+    /*
+     * Modifier un lieu par son id
+     */
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/edit/{id}', name: '_edit')]
     public function edit(
         int                    $id,
@@ -98,7 +96,7 @@ class LocationController extends AbstractController
             $em->persist($location);
             $em->flush();
             $this->addFlash('success', 'Votre modification est bien enregistrée');
-            return $this->redirectToRoute('location_showOne', ["id" => $location->getId()]);
+            return $this->redirectToRoute('location_show', ["id" => $location->getId()]);
         }
         return $this->render('location/create.html.twig', [
             'form' => $form,
@@ -108,8 +106,8 @@ class LocationController extends AbstractController
 
     }
 
-    #[Route('/remove/{id}', name: '_remove')]
-    public function remove(
+    #[Route('/delete/{id}', name: '_delete')]
+    public function delete(
         int                    $id,
         locationRepository     $locRepo,
         EntityManagerInterface $em
@@ -118,6 +116,6 @@ class LocationController extends AbstractController
         $location = $locRepo->findOneBy(['id' => $id]);
         $em->remove($location);
         $em->flush();
-        return $this->redirectToRoute('location_showAll');
+        return $this->redirectToRoute('location_index');
     }
 }

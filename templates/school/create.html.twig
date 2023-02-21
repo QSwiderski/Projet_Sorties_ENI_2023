@@ -3,21 +3,13 @@
 
 {% block body %}
     <div>
-    <h2>{% if (modify) %}Modifier {% else %}Ajouter un site{% endif %}</h2>
+        <h2>{{ modify? 'Modifier ' :'Ajouter ' }}un site de rattachement</h2>
         {{ form_start(schoolForm) }}
-
-        {# Les inputs sont les attribut (name, lattitude etc...) de l'instance $school #}
         <p>Nom du site : {{ form_widget(schoolForm.name) }}</p>
         <p>Latitude : {{ form_widget(schoolForm.latitude) }}</p>
         <p>Longitude : {{ form_widget(schoolForm.longitude) }}</p>
-
         <button>{% if (modify) %} Enregistrer la modification {% else %} Enregistrer {% endif %}</button>
-
-
         {{ form_end(schoolForm) }}
-        <form>
-            <input type="button" value="Annuler" onclick="history.go(-1)">
-        </form>
     </div>
 {% endblock %}
 

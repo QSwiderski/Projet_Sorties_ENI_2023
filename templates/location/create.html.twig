@@ -8,11 +8,8 @@
     {{ form_widget(form) }}
     <button>{{ edit?'Appliquer':'Créer' }}</button>
     {{ form_end(form) }}
-    <form>
-    <input type="button" value="Annuler" onclick="history.go(-1)">
-    </form>
     {% if (is_granted('ROLE_ADMIN')) %}
-        <a href="{{ path('location_showAll') }}">Retour à la liste des lieux</a>
+        <a href="{{ path('location_index') }}">Retour à la liste des lieux</a>
     {% endif %}
     <a href="{{ path('home_index') }}">Retour à L'accueil</a>
 {% endblock %}

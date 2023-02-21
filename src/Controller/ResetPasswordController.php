@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Credentials;
+use App\Entity\User;
 use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -41,7 +41,7 @@ class ResetPasswordController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             return $this->processSendingPasswordResetEmail(
-                $form->get('user')->getData(),
+                $form->get('email')->getData(),
                 $mailer
             );
         }
@@ -119,7 +119,7 @@ class ResetPasswordController extends AbstractController
             // The session is cleaned up after the password has been changed.
             $this->cleanSessionAfterReset();
 
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('home_index');
         }
 
         return $this->render('reset_password/reset.html.twig', [
@@ -129,8 +129,8 @@ class ResetPasswordController extends AbstractController
 
     private function processSendingPasswordResetEmail(string $emailFormData, MailerInterface $mailer): RedirectResponse
     {
-        $user = $this->entityManager->getRepository(Credentials::class)->findOneBy([
-            'user' => $emailFormData,
+        $user = $this->entityManager->getRepository(User::class)->findOneBy([
+            'email' => $emailFormData,
         ]);
 
         // Do not reveal whether a user account was found or not.
@@ -155,8 +155,8 @@ class ResetPasswordController extends AbstractController
         }
 
         $email = (new TemplatedEmail())
-            ->from(new Address('ResetPassword@Sorties.com', 'Passwordotron le Resetter'))
-            ->to($user->getUser())
+            ->from(new Address('account_bot@sorties.com', 'Bernie The Bot'))
+            ->to($user->getEmail())
             ->subject('Your password reset request')
             ->htmlTemplate('reset_password/email.html.twig')
             ->context([
