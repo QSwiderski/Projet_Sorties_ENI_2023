@@ -1,8 +1,74 @@
+#container{
+    align-content: center;
+}
+
+div {
+    margin-bottom: 10px;
+    border: 1px solid mediumpurple;
+}
+
+
+.format {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+    text-align: center;
+    display: grid;
+}
+
+
+.center {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+    text-align: center;
+    display: grid;
+
+}
+
+label {
+    display: inline-grid;
+    width: 150px;
+    text-align: right;
+}
+
+
+b {
+    align-content: center;
+}
+
+
+h1 {
+    font-size: 32px;
+    color: lavenderblush;
+    text-align:center;
+}
+
+h2 {
+    font-size: 20px;
+    color: lavenderblush;
+
+
+}
+
+body {
+    background-color : #1c1c1e ;
+    color : lavenderblush ;
+    min-height: 100vh;
+    min-width: 100vw;
+}
+
+.new_event{
+    font-size: 20px;
+    text-align: center;
+
+}
+
 table {
     table-layout: fixed;
     width: 100%;
     border-collapse: collapse;
-    border: 3px solid red;
+    border: 1px solid black;
     padding: 5px;
 }
 th{
@@ -10,6 +76,7 @@ th{
     height : 20px;
     font-size: 1.4em;
 }
+
 th, td {
     padding: 20px;
     margin: 10px;
@@ -19,15 +86,85 @@ th, td {
 td>a{
     font-size: 1.2em;
 }
+
 #logo{
-    max-width: 360px;
+    max-width: 400px;
+
+
 }
 header{
-    align-content: space-between;
+    align-content: space-around;
+    background-color : #1c1c1e ;
+    color : #fefefe ;
 }
 header>div{
     display: inline-block ;
 }
+
 .hidden{
+    display: none;
+}
+
+:root {
+    --line-bg: #111;
+    --line-height: 10px;
+    --light-width: 50%;
+    --light-cell-number: 8;
+    --light-cell-width: calc(var(--line-height) * 3);
+    --light-cell-separator-width: calc(var(--line-height) * 0.1);
+    /* red light #ff000 */
+    --light-color-on: rgba(255,0,0,1);
+    --light-color-off: rgba(255,0,0,.25);
+}
+
+.line {
+    position: relative;
+    width: calc(((var(--light-cell-width) + var(--light-cell-separator-width)) * var(--light-cell-number)) - var(--light-cell-separator-width));
+    height: var(--line-height);
+    overflow: hidden;
+    background: var(--line-bg);
+    /* center */
+    top: 50vh;
+    left: 50vw;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.line:after {
+    position: absolute;
+    content: "";
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-image: repeating-linear-gradient(
+            90deg,
+            var(--light-color-off),
+            var(--light-color-off) var(--light-cell-width),
+            var(--line-bg) var(--light-cell-width),
+            var(--line-bg) calc(var(--light-cell-width) + var(--light-cell-separator-width))
+    );
+    background-size: 200% 200%;
+}
+
+.light {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    left: calc(var(--light-width) / 2 * -1); /* hidden start */
+    width: var(--light-width);
+    background: linear-gradient(90deg, transparent 0%, var(--light-color-on) 45%, var(--light-color-on) 55%, transparent 100%);
+    animation: KITT 2s infinite ease-in-out alternate;
+}
+
+@keyframes KITT {
+    0%, 100% {
+        left: calc(var(--light-width) / 2 * -1);
+    }
+    50% {
+        left: calc(100% - var(--light-width) / 2);
+    }
+}
+
+#hidden {
     display: none;
 }
