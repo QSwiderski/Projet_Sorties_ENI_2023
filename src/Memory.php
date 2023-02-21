@@ -16,26 +16,29 @@ class Memory
      */
     public function write($email, $request)
     {
-        $this->userevent[$email] = $request;
+        $event = new Event();
+        $event->setName($request->get('mem_name'));
+        if ($dateStart = $request->get('mem_dateStart')) {
+            $event->setDateStart(date_create_from_format('d/m/Y H:i:s', $dateStart));
+        }
+        if ($dateFinish = $request->get('mem_dateFinish')) {
+            $event->setDateFinish(date_create_from_format('d/m/Y H:i:s', $dateFinish));
+        }
+        if ($dateLimit = $request->get('mem_dateLimit')) {
+            $event->setDateLimit(date_create_from_format('d/m/Y H:i:s', $dateLimit));
+        }
+        $event->setPeopleMax(intval($request->get('mem_peopleMax')));
+        $event->setDescription($request->get('mem_description'));
+        $this->userevent[$email] = $event;
     }
 
-    /**
-     * @param $email
-     * @return InputBag|null
-     */
-    public function read($email): ?InputBag
-    {
-        if (isset($this->userevent[$email])) {
-            return $this->userevent[$email];
-        }
-        return null;
-    }
 
     /**
      * @param $email
      * @return void
      */
-    public function clear($email)
+    public
+    function clear($email)
     {
         if (isset($this->userevent[$email])) {
             unset($this->userevent[$email]);
@@ -47,17 +50,13 @@ class Memory
      * @param $email
      * @return Event
      */
-    public function createAnEvent($email)
+    public
+    function createAnEvent($email)
     {
-        $event = new Event();
-        if (isset($this->userevent[$email])){
-            $event->setName($this->userevent['mem_name']);
-            $event->setDateStart($this->userevent['mem_dateStart']);
-            $event->setDateFinish($this->userevent['mem_dateFinish']);
-            $event->setDateLimit($this->userevent['mem_dateLimit']);
-            $event->setPeopleMax($this->userevent['mem_peopleMax']);
-            $event->setDescription($this->userevent['mem_description']);
+        if (isset($this->userevent[$email])) {
+            return $this->userevent[$email];
         }
-        return $event;
+        return new Event();
+
     }
 }
