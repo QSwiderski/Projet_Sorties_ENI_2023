@@ -5,9 +5,13 @@ namespace App;
 use App\Entity\Event;
 use Symfony\Component\HttpFoundation\InputBag;
 
+/*
+ * service de mémorisation d'un objet App\Event
+ * depuis un objet HTTPFoundation/request fourni par controller
+ */
 class Memory
 {
-    private $userevent = [];
+    private static $userevent = [];
     //memoriser le paquet parametres d'une requete
 
     /**
@@ -29,7 +33,8 @@ class Memory
         }
         $event->setPeopleMax(intval($request->get('mem_peopleMax')));
         $event->setDescription($request->get('mem_description'));
-        $this->userevent[$email] = $event;
+        self::$userevent[$email] = $event;
+        //        dd(self::$userevent);
     }
 
 
@@ -40,11 +45,10 @@ class Memory
     public
     function clear($email)
     {
-        if (isset($this->userevent[$email])) {
-            unset($this->userevent[$email]);
+        if (isset(self::$userevent[$email])) {
+            unset(self::$userevent[$email]);
         }
     }
-
 
     /**
      * @param $email
@@ -53,8 +57,9 @@ class Memory
     public
     function createAnEvent($email)
     {
-        if (isset($this->userevent[$email])) {
-            return $this->userevent[$email];
+//        dd(self::$userevent);
+        if (isset(self::$userevent[$email])) {
+            return self::$userevent[$email];
         }
         return new Event();
 
