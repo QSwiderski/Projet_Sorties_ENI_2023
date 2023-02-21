@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ edit? 'Modifier':'Créer' }} un evenement - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <h2>{{ edit? 'Modifier un ':'Creer un nouvel' }} evenement</h2>
+    {{ form_start(form) }}
+    {{ form_start(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.dateStart) }}
+    {{ form_row(form.dateFinish) }}
+    {{ form_row(form.peopleMax) }}
+    {{ form_row(form.description) }}
+    {{ form_row(form.location) }}
+    <div id="loc_create">(+)</div>
+    {{ form_row(form.dateLimit) }}
+    <button>{{ edit? 'Appliquer':'Créer' }}</button>
+    {{ form_end(form) }}
+    <div><label for="school_name">Ecole de rattachement</label>
+        <p id="school_name">{{ app.user.school.name }}</p></div>
+    <div id="hidden">{{ path('location_create') }}</div>
+    <a href="{{ path('home_index') }}">Retour à L'accueil</a>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('JS/addNewLocation.js') }}"></script>
+{% endblock %}

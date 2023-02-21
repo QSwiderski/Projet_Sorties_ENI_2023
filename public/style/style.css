@@ -1,0 +1,33 @@
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    border: 3px solid red;
+    padding: 5px;
+}
+th{
+    background-color: lightgrey;
+    height : 20px;
+    font-size: 1.4em;
+}
+th, td {
+    padding: 20px;
+    margin: 10px;
+    text-align: center;
+    border: 2px solid black;
+}
+td>a{
+    font-size: 1.2em;
+}
+#logo{
+    max-width: 360px;
+}
+header{
+    align-content: space-between;
+}
+header>div{
+    display: inline-block ;
+}
+.hidden{
+    display: none;
+}

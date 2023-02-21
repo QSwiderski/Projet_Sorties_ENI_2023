@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+
+    <div>
+        <a href="{{ path('user_index') }}">Home</a>
+        <a href="{{ path('user_create') }}">Create new User</a>
+    </div>
+
+
+    <div>
+        <label for="SearchUser">Find a User:</label>
+        <input type="search" id="SearchUser" name="SearchUser" placeholder="Pseudo...">
+        <button>Search</button>
+    </div>
+
+    <h1>User index</h1>
+
+    <div>
+        {% for user in users %}
+        <div>
+            <div>{{ user.surname }} {{ user.name }}</div>
+            <div>{{ user.phone }}</div>
+            <div>{{ user.email }}</div>
+            <div>ID : {{ user.id }} {{ 'ROLE_ADMIN' in user.roles ? 'Administrateur' : '' }}</div>
+            <div>
+                <a href="{{ path('user_show', {'id': user.id}) }}">show</a>
+                <a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
+                <a href="{{ path('user_delete', {'id': user.id}) }}">delete</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="{{ path('user_create') }}">Create new User</a>
+{% endblock %}

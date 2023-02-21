@@ -1,5 +1,4 @@
-# .gitignore
-.idea
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -8,10 +7,4 @@
 /public/bundles/
 /var/
 /vendor/
-/enonce/
 ###< symfony/framework-bundle ###
-#requirements
-#composer req maker-bundle
-#composer req twig
-#composer req asset
-#composer req doctrine

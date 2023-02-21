@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lieux de Sortie - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h2>Lieux de sortie :</h2>
+        <a href={{ path('location_create') }}>Nouveau Lieu</a><br>
+            {% for location in locations %}
+                <div>
+                    <div><a href="{{ path('location_show', {'id': location.id}) }}">{{ location.name }}</a></div>
+                    <div>{{ location.adress }}</div>
+                    <div>{{ location.postcode }}</div>
+                    <div>{{ location.city }}</div>
+                    <div>Aux Coordonnées :{{ location.latitude }};{{ location.longitude }} <a target="_blank"  href="https://www.google.fr/maps?q={{ location.latitude }},{{ location.longitude }}">Voir sur la carte</a></div>
+                    <div><a href={{ path('location_edit', {'id': location.id}) }}>Modifier</a>&nbsp&nbsp&nbsp<a href={{ path('location_delete',{'id':location.id}) }}>Supprimer</a></div>
+                </div>
+            {% endfor %}
+    </div>
+{% endblock %}

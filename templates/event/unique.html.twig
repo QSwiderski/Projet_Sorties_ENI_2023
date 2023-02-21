@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ event.name }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h2>Evenement {{ event.name }}</h2>
+        <p>nom : {{ event.name }}</p>
+        <p>debut : {{ event.dateStart.format('d/m/Y H:i') }}</p>
+        <p>clôture : {{ event.dateLimit.format('d/m/Y H:i') }}</p>
+        <p>places : {{ event.peopleMax }}</p>
+        <p>etat : //TODO etat </p>
+        <p>organisateur : {{ event.organizer.name }}</p>
+    </div>
+        <a href="{{ path('home_index') }}">Retour à L'accueil</a>
+{% endblock %}

@@ -7,9 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
-class Event
+class Event implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -34,8 +35,8 @@ class Event
     #[ORM\Column(nullable: true)]
     private ?int $peopleMax = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'events')]
-    private Collection $users;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $cancelReason = null;
 
     #[ORM\ManyToOne(inversedBy: 'organizedEvents')]
     #[ORM\JoinColumn(nullable: false)]
@@ -44,6 +45,9 @@ class Event
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Location $location = null;
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'events')]
+    private Collection $users;
 
     public function __construct()
     {
@@ -127,6 +131,42 @@ class Event
         return $this;
     }
 
+    public function getCancelReason(): ?string
+    {
+        return $this->cancelReason;
+    }
+
+    public function setCancelReason(?string $cancelReason): self
+    {
+        $this->cancelReason = $cancelReason;
+
+        return $this;
+    }
+
+    public function getOrganizer(): ?User
+    {
+        return $this->organizer;
+    }
+
+    public function setOrganizer(?User $organizer): self
+    {
+        $this->organizer = $organizer;
+
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): self
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, User>
      */
@@ -154,27 +194,46 @@ class Event
         return $this;
     }
 
-    public function getOrganizer(): ?User
-    {
-        return $this->organizer;
+    private function getUsersAsArray(){
+        $usersAsArray = [];
+        foreach($this->users as $user){
+            $usersAsArray[] = $user->getEmail();
+        }
+        return $usersAsArray;
     }
 
-    public function setOrganizer(?User $organizer): self
+    public function jsonSerialize(): mixed
     {
-        $this->organizer = $organizer;
-
-        return $this;
+        return $this->turnToUTF8([
+            'organizer' => $this->organizer->getEmail(),
+            'school'=> $this->organizer->getSchool()->getName(),
+            'locationID' => $this->location->getId(),
+            'locationName' => $this->location->getName(),
+            'name' => $this->name,
+            'dateStart' => $this->dateStart->format('Y-m-d H:i:s'),
+            'dateFinish' => $this->dateFinish->format('Y-m-d H:i:s'),
+            'dateLimit' => $this->dateLimit->format('Y-m-d H:i:s'),
+            'description' => $this->description,
+            'peopleMax' =>$this->peopleMax,
+            'users'=> $this->getUsersAsArray()
+        ]);
     }
 
-    public function getLocation(): ?Location
-    {
-        return $this->location;
-    }
+    /*
+     *transform les entités (objet ou string) au format UTF 8
+     */
+    function turnToUTF8($d) {
+        if (is_array($d))
+            foreach ($d as $k => $v)
+                $d[$k] = $this->turnToUTF8($v);
 
-    public function setLocation(?Location $location): self
-    {
-        $this->location = $location;
+        else if(is_object($d))
+            foreach ($d as $k => $v)
+                $d->$k = $this->turnToUTF8($v);
 
-        return $this;
+        else
+            return utf8_encode($d);
+
+        return $d;
     }
 }

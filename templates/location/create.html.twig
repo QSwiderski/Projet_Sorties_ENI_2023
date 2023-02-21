@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ edit?'Modifier':'Créer' }} un Lieu de Sortie - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <h2>{{ edit?'Modifier un':'Créer un nouveau' }} lieu de sortie</h2>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button>{{ edit?'Appliquer':'Créer' }}</button>
+    {{ form_end(form) }}
+    {% if (is_granted('ROLE_ADMIN')) %}
+        <a href="{{ path('location_index') }}">Retour à la liste des lieux</a>
+    {% endif %}
+    <a href="{{ path('home_index') }}">Retour à L'accueil</a>
+{% endblock %}
