@@ -181,7 +181,6 @@ class Event implements JsonSerializable
             $this->users->add($user);
             $user->addEvent($this);
         }
-
         return $this;
     }
 
@@ -190,13 +189,13 @@ class Event implements JsonSerializable
         if ($this->users->removeElement($user)) {
             $user->removeEvent($this);
         }
-
         return $this;
     }
 
-    private function getUsersAsArray(){
+    private function getUsersAsArray()
+    {
         $usersAsArray = [];
-        foreach($this->users as $user){
+        foreach ($this->users as $user) {
             $usersAsArray[] = $user->getEmail();
         }
         return $usersAsArray;
@@ -206,7 +205,7 @@ class Event implements JsonSerializable
     {
         return $this->turnToUTF8([
             'organizer' => $this->organizer->getEmail(),
-            'school'=> $this->organizer->getSchool()->getName(),
+            'school' => $this->organizer->getSchool()->getName(),
             'locationID' => $this->location->getId(),
             'locationName' => $this->location->getName(),
             'name' => $this->name,
@@ -214,20 +213,21 @@ class Event implements JsonSerializable
             'dateFinish' => $this->dateFinish->format('Y-m-d H:i:s'),
             'dateLimit' => $this->dateLimit->format('Y-m-d H:i:s'),
             'description' => $this->description,
-            'peopleMax' =>$this->peopleMax,
-            'users'=> $this->getUsersAsArray()
+            'peopleMax' => $this->peopleMax,
+            'users' => $this->getUsersAsArray()
         ]);
     }
 
     /*
      *transform les entités (objet ou string) au format UTF 8
      */
-    function turnToUTF8($d) {
+    function turnToUTF8($d)
+    {
         if (is_array($d))
             foreach ($d as $k => $v)
                 $d[$k] = $this->turnToUTF8($v);
 
-        else if(is_object($d))
+        else if (is_object($d))
             foreach ($d as $k => $v)
                 $d->$k = $this->turnToUTF8($v);
 
