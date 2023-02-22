@@ -264,7 +264,7 @@ class Event implements JsonSerializable
 
     public function getState(): string
     {
-        $today=new \DateTime('now');
+        $today=new DateTime('now');
         if($this->dateFinish < $today){
             return 'FINISHED';
         }else if($this->dateStart < $today){

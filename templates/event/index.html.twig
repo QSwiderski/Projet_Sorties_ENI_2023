@@ -7,6 +7,14 @@
     <div class="container">
         <h2>Evenements :</h2>
         <a href={{ path('event_create') }}>Nouveau Event</a><br>
+        {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.dateMin) }}
+        {{ form_row(form.dateMax) }}
+        {{ form_row((form.school)) }}
+        {{ form_row((form.organizer)) }}
+        <button>Filtrer</button>
+        {{ form_end(form) }}
         <table>
             <tr>
                 <th>Quoi? (par qui?)</th>
@@ -23,11 +31,13 @@
                     <tr>
                         {# TODO Afficher une icone en fonction du type d'event #}
                         <td><p><a href="{{ path('event_show', {'id': event.id}) }}">{{ event.name }}</a></p>
-                            <p> par <a href="{{ path('user_show', {'id': event.organizer.id}) }}">{{ event.organizer.pseudo }}</a></p></td>
-                        <td><p>{{ event.location.name }}</p>
+                            <p> par <a href="{{ path('user_show', {'id': event.organizer.id}) }}">{{ event.organizer.pseudo }}</a></p>
+                        </td>
+                        <td><a href="{{ path('location_show', {'id': event.location.id}) }}">{{ event.location.name }}</a>
+                            <a target="_blank"  href="https://www.google.fr/maps?q={{ event.location.latitude }},{{ event.location.longitude }}">Voir sur la carte</a>
                             <p>A vol d'oiseau : {{ event.location.distanceFrom(app.user.school) }} Km</p>
                         </td>
-                        <td><p>{{ event.dateStart.format('d/m/Y H:i') }}</p> à <p>{{ event.dateLimit.format('d/m/Y H:i') }}</p></td>
+                        <td><p>{{ event.dateStart.format('d/m/Y H:i') }}</p> à <p>{{ event.dateFinish.format('d/m/Y H:i') }}</p></td>
 
                         <td>{% if event.room %}
                                 {{ event.users.count }} / {{ event.peopleMax }} ( {{ event.room }} places dispo )

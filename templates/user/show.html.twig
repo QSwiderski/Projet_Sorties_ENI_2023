@@ -11,6 +11,10 @@
         <p id="user_name">{{ user.name?user.name:'No name' }}</p>
     </div>
     <div>
+        <label for="user_school">Ecole de rattachement </label>:
+        <a id="user_school" target="_blank"  href="https://www.google.fr/maps?q={{ user.school.latitude }},{{ user.school.longitude }}">Voir {{ user.school.name }} sur la carte</a>
+    </div>
+    <div>
         <label for='user_phone'>Phone</label>:
         <p id="user_phone">{{ user.phone?user.phone:'No known phone' }}</p>
     </div>

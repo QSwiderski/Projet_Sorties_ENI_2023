@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\EventDeleteType;
 use App\Form\EventType;
+use App\Form\QueryType;
 use App\Memory;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
@@ -20,18 +21,38 @@ class EventController extends AbstractController
 {
     /*
      * voir toutes les sorties
-     * avec filtre
+     * avec filtre par queryForm
      */
     #[Route('/', name: '_index')]
     public function showAll(
         EntityManagerInterface $em,
         EventRepository        $evRepo,
-        ToolKitBQP             $tool
+        ToolKitBQP             $tool,
+        Request                $request
     ): Response
     {
+        //call archivage automatique à chaque accès au site
         $tool->autoArchive($em, $evRepo);
-        $events = $evRepo->findAll();
+        //filtrage par la liste
+        $research = $request->query->all('query');
+        $keys = ['name', 'school', 'dateMin', 'dateMax'];
+        $specifiedQuery = false;
+        foreach ($keys as $key) {
+            if (isset($research[$key])){
+                $specifiedQuery = true;
+            };
+        }
+        // TODO include organizer.id si boolean 'organizer'
+        //obtenir les evenements tous ou par filtre
+        if ($specifiedQuery) {
+            $events = $evRepo->findByField($research);
+        } else {
+            $events = $evRepo->findAll();
+        }
+        //passer le formulaire type au twig
+        $form = $this->createForm(QueryType::class);
         return $this->render('event/index.html.twig', [
+            'form' => $form,
             'events' => $events
         ]);
     }
@@ -174,7 +195,7 @@ class EventController extends AbstractController
 
             //TODO envoyer un mail aux participants  function cancel($event)
             //archivage
-            $tool->archive($event,$this->isGranted('ROLE_ADMIN')?'ADMIN':'USER', $em);
+            $tool->archive($event, $this->isGranted('ROLE_ADMIN') ? 'ADMIN' : 'USER', $em);
 
             return $this->redirectToRoute('event_index');
         }

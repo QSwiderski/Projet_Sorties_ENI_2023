@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Repository\EventRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query;
 
 class ToolKitBQP
 {
@@ -71,4 +72,6 @@ class ToolKitBQP
             }
         }
     }
+
+
 }
