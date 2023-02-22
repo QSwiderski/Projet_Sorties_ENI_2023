@@ -56,19 +56,16 @@
 </header>
 
 <body>
-
-
-
 {% block body %}{% endblock %}
-
 </body>
 
 
 <footer>
-
-
+    <audio id="bg-audio" src="{{ asset("sound/lady-of-the-80s.mp3") }}"></audio>
+    <audio id="neon-audio" src="{{ asset("sound/neon-on.mp3") }}"></audio>
 </footer>
 
 {% block javascripts %}
 {% endblock %}
+<script src="{{ asset("JS/default.js") }}"></script>
 </html>

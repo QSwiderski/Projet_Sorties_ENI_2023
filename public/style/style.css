@@ -52,15 +52,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: black;
 
-    /* A regler, pas fonctionnel*/
-    background-image: url("../images/synthwavebg.jpg"),
-    linear-gradient(to right, rgba(255,255,255,0) 20%,
-            rgba(255,255,255,1));
-;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, .6)), url("../images/bg.jpg");
     background-size: cover;
 
 }
