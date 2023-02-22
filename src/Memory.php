@@ -18,8 +18,9 @@ class Memory
      * @param string $email
      * @param InputBag $array
      */
-    public function write($email, $request)
+    public function write($email, $requestToSave)
     {
+        $request = clone $requestToSave;
         $event = new Event();
         $event->setName($request->get('mem_name'));
         if ($dateStart = $request->get('mem_dateStart')) {

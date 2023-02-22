@@ -1,4 +1,4 @@
-    {% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Evenements - {{ parent() }}{% endblock %}
 
@@ -17,29 +17,38 @@
                 <th>organisateur</th>
                 <th>actions</th>
             </tr>
-        {% for event in events %}
-            {# % if (is_granted('ROLE_ADMIN') || event.organizer == app.user.userIdentifier || event.published) %} #}
-            <tr>
-                {# <div class="{{ wish.category.iconame }}"></div> #}
-                <td><a href="{{ path('event_show', {'id': event.id}) }}">{{ event.name }}</a></td>
-                <td>{{ event.dateStart.format('d/m/Y H:i') }}</td>
-                <td>{{ event.dateLimit.format('d/m/Y H:i') }}</td>
-                {% set usercount = 0 %}
-                {% for user in event.users %}
-                    {% set usercount = usercount + 1 %}
-                {% endfor %}
-                <td>{{ event.peopleMax-usercount }} places dispo ( {{ usercount }} / {{ event.peopleMax }} )</td>
-                <td>{{ event.state }}</td>
-                <td>{{ event.organizer.pseudo }}</td>
-                <td><a href={{ path('event_edit', {'id': event.id}) }}>Modifier</a>
-                    <a href={{ path('event_remove',{'id':event.id}) }}>Supprimer</a>
-                    <a href="{{ path('event_apply',{'id':event.id}) }}">Participer</a>
-                    <a href="{{ path('event_publish',{'id':event.id}) }}">Publier</a>
-                </td>
+            {% set nbresult = 0 %}
+            {% for event in events %}
+                {% if (is_granted('ROLE_ADMIN') or event.organizer == app.user or event.published) %}
+                    {% set nbresult = nbresult + 1 %}
+                    <tr>
+                        {# TODO Afficher une icone en fonction du type d'event #}
+                        <td><a href="{{ path('event_show', {'id': event.id}) }}">{{ event.name }}</a></td>
+                        <td>{{ event.dateStart.format('d/m/Y H:i') }}</td>
+                        <td>{{ event.dateLimit.format('d/m/Y H:i') }}</td>
+                        <td>{% if event.room %}
+                                {{ event.room }} places dispo ( {{ event.users.count }} / {{ event.peopleMax }} )
+                            {% else %}
+                                Pas de limite de places
+                            {% endif %}
+                        </td>
+                        <td>{{ event.state }}</td>
+                        <td>{{ event.organizer.pseudo }}</td>
+                        <td>
+                            {% if (is_granted('ROLE_ADMIN') or event.organizer == app.user) %}
+                                <a href={{ path('event_edit', {'id': event.id}) }}>Modifier</a>
+                                <a href={{ path('event_remove',{'id':event.id}) }}>Supprimer</a>
+                            {% endif %}
+                            <a href="{{ path('event_apply',{'id':event.id}) }}">Participer</a>
+                            {% if (event.state == 'UNPUBLISHED') %}
+                                <a href="{{ path('event_publish',{'id':event.id}) }}">Publier</a>
+                            {% endif %}
+                        </td>
 
-            </tr>
-    {# {% endif %}#}
-        {% endfor %}
+                    </tr>
+                {% endif %}
+            {% endfor %}
         </table>
+        <p>Résultats : {{ nbresult }}</p>
     </div>
 {% endblock %}
