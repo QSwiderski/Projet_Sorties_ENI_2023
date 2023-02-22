@@ -3,30 +3,36 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
+    <div class="container">
 <form method="post">
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">E-mail</label>:
+    <h1><strong>Se Connecter</strong></h1>
+    <label for="inputEmail"><strong>E-mail</strong></label>:
     <input type="text" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="username" required autofocus>
-    <label for="inputPassword">Password</label>:
+
+    <label for="inputPassword"><strong>Mot de passe</strong></label>:
     <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-    <a href="{{ path('app_check_email') }}">Forgot my password</a>
+    <a class= "glowing-btn glowing-txt" href="{{ path('app_check_email') }}">Mot de passe oublié</a>
 
     <input type="hidden" name="_csrf_token"
            value="{{ csrf_token('authenticate') }}"
     >
 
-        <div class="checkbox mb-3">
+        <div class="btn-container">
             <label>
-                <input type="checkbox" name="_remember_me">Remember me
+                <input type="checkbox" class="toggle">
+                <h1><strong>Se Souvenir de Moi</strong></h1>
             </label>
         </div>
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
+    <button style="display: contents"
+            class="glowing-btn glowing-txt" type="submit">
+        Entrer
     </button>
+
 </form>
+    </div>
 {% endblock %}
