@@ -12,7 +12,7 @@
                 <th>nom</th>
                 <th>debut</th>
                 <th>clôture</th>
-                <th>places</th>
+                <th>participants</th>
                 <th>etat</th>
                 <th>organisateur</th>
                 <th>actions</th>
@@ -27,21 +27,23 @@
                         <td>{{ event.dateStart.format('d/m/Y H:i') }}</td>
                         <td>{{ event.dateLimit.format('d/m/Y H:i') }}</td>
                         <td>{% if event.room %}
-                                {{ event.room }} places dispo ( {{ event.users.count }} / {{ event.peopleMax }} )
+                                {{ event.users.count }} / {{ event.peopleMax }} ( {{ event.room }} places dispo )
                             {% else %}
-                                Pas de limite de places
+                                {{ event.users.count }} (Pas de limite)
                             {% endif %}
                         </td>
                         <td>{{ event.state }}</td>
                         <td>{{ event.organizer.pseudo }}</td>
                         <td>
-                            {% if (is_granted('ROLE_ADMIN') or event.organizer == app.user) %}
-                                <a href={{ path('event_edit', {'id': event.id}) }}>Modifier</a>
-                                <a href={{ path('event_remove',{'id':event.id}) }}>Supprimer</a>
-                            {% endif %}
-                            <a href="{{ path('event_apply',{'id':event.id}) }}">Participer</a>
-                            {% if (event.state == 'UNPUBLISHED') %}
-                                <a href="{{ path('event_publish',{'id':event.id}) }}">Publier</a>
+                            {% if event.state != 'CLOSED' or is_granted('ROLE_ADMIN') %}
+                                {% if (is_granted('ROLE_ADMIN') or event.organizer == app.user) %}
+                                    <a href={{ path('event_edit', {'id': event.id}) }}>Modifier</a>
+                                    <a href={{ path('event_remove',{'id':event.id}) }}>Supprimer</a>
+                                {% endif %}
+                                <a href="{{ path('event_apply',{'id':event.id}) }}">{{ (app.user in event.users)? 'Ne plus participer':'Participer' }}</a>
+                                {% if (event.state == 'UNPUBLISHED') %}
+                                    <a href="{{ path('event_publish',{'id':event.id}) }}">Publier</a>
+                                {% endif %}
                             {% endif %}
                         </td>
 
