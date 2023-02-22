@@ -166,7 +166,8 @@ class Event implements JsonSerializable
     public function setOrganizer(?User $organizer): self
     {
         $this->organizer = $organizer;
-
+        //auto apply pour son event
+        $this->addUser($organizer);
         return $this;
     }
 
@@ -229,8 +230,10 @@ class Event implements JsonSerializable
         }
         if ($alreadyin){
             $this->removeUser($applyUser);
-        }else {
+        }else if ($this->peopleMax == null || $this->getRoom()>0){
             $this->addUser($applyUser);
+        }else {
+            return null;
         }
         return $this;
     }
@@ -253,7 +256,12 @@ class Event implements JsonSerializable
         ]);
     }
 
-
+    public function getRoom(){
+        if($this->peopleMax == null){
+            return null;
+        }
+        return $this->peopleMax - $this->users->count();
+    }
 
     public function getState(): string
     {

@@ -9,14 +9,32 @@
         <div>debut : {{ event.dateStart.format('d/m/Y H:i') }}</div>
         <div>fin : {{ event.dateFinish.format('d/m/Y H:i') }}</div>
         <div>clôture : {{ event.dateLimit.format('d/m/Y H:i') }}</div>
-        <div>places : {{ event.peopleMax }}</div>
+
         <div>etat : {{ event.state }}</div>
         <div>organisateur : {{ event.organizer.pseudo }}</div>
         <div> Participants</div>
-        {% for user in event.users %}
-            <p>{{ user.pseudo }}</p>
-        {% endfor %}
+        <div>{% if event.room %}
+                {{ event.users.count }} / {{ event.peopleMax }} ( {{ event.room }} places dispo )
+            {% else %}
+                {{ event.users.count }} (Pas de limite)
+            {% endif %}</div>
+        <div>{% for user in event.users %}
+                <p>{{ user.pseudo }}</p>
+            {% endfor %}</div>
+
 
     </div>
+    {% if event.state != 'CLOSED' or is_granted('ROLE_ADMIN') %}
+        <div>
+            {% if (is_granted('ROLE_ADMIN') or event.organizer == app.user) %}
+                <a href={{ path('event_edit', {'id': event.id}) }}>Modifier</a>
+                <a href={{ path('event_remove',{'id':event.id}) }}>Supprimer</a>
+            {% endif %}
+            <a href="{{ path('event_apply',{'id':event.id}) }}">{{ (app.user in event.users)? 'Ne plus participer':'Participer' }}</a>
+            {% if (event.state == 'UNPUBLISHED') %}
+                <a href="{{ path('event_publish',{'id':event.id}) }}">Publier</a>
+            {% endif %}
+        </div>
+    {% endif %}
     <a href="{{ path('home_index') }}">Retour à L'accueil</a>
 {% endblock %}

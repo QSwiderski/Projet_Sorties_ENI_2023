@@ -1,0 +1,1 @@
+"20-02-2023 19:36:51"{"organizer":"admin@mail.com","school":"St Herblain","locationID":"2","locationName":"Berlin 1989","name":"prout","dateStart":"2023-02-12 19:44:00","dateFinish":"2023-02-13 19:44:00","dateLimit":"2023-02-14 19:44:00","description":"","peopleMax":"","users":[]}
