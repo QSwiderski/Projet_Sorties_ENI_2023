@@ -4,12 +4,28 @@
 
 {% block body %}
     <div class="container">
-        <h2>So you want to cancel the event " {{ event.name }} "</h2>
-        <p>Due to begin on {{ event.dateStart.format('d/m/Y H:i') }}</p>
-        {{ form_start(delete_form) }}
-        {{ form_widget(delete_form) }}
-        <button>Archiver</button>
-        {{ form_end(delete_form) }}
+        <div class="center">
+            <h2>Vous souhaitez annuler l'évènement: " {{ event.name }} "</h2>
+            <p> Qui devait débuter le {{ event.dateStart.format('d/m/Y H:i') }}</p>
+        </div>
+
+        <div class="format">
+            <div class="champForm">
+                {{ form_start(delete_form) }}
+            </div>
+
+            <div class="champForm">
+                {{ form_widget(delete_form) }}
+            </div>
+
+            <div class="center">
+                <button class="button is-danger is-light">Archiver</button>
+                {{ form_end(delete_form) }}
+                <br>
+                <a class="button is-link is-light" href="{{ path('home_index') }}">Retour à L'accueil</a>
+            </div>
+
+        </div>
     </div>
-        <a href="{{ path('home_index') }}">Retour à L'accueil</a>
-{% endblock %}
+
+{% endblock %
