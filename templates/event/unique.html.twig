@@ -6,12 +6,17 @@
     <div class="container">
         <h2>Evenement {{ event.name }}</h2>
         <div>nom : {{ event.name }}</div>
+        <div><a href="{{ path('location_show', {'id': event.location.id}) }}">{{ event.location.name }}</a>
+            <a target="_blank"  href="https://www.google.fr/maps?q={{ event.location.latitude }},{{ event.location.longitude }}">Voir sur la carte</a>
+        </div>
+
         <div>debut : {{ event.dateStart.format('d/m/Y H:i') }}</div>
         <div>fin : {{ event.dateFinish.format('d/m/Y H:i') }}</div>
         <div>clôture : {{ event.dateLimit.format('d/m/Y H:i') }}</div>
 
         <div>etat : {{ event.state }}</div>
         <div>organisateur : {{ event.organizer.pseudo }}</div>
+        <div>A vol d'oiseau : {{ event.location.distanceFrom(app.user.school) }} Km</div>
         <div> Participants</div>
         <div>{% if event.room %}
                 {{ event.users.count }} / {{ event.peopleMax }} ( {{ event.room }} places dispo )
@@ -19,7 +24,7 @@
                 {{ event.users.count }} (Pas de limite)
             {% endif %}</div>
         <div>{% for user in event.users %}
-                <p>{{ user.pseudo }}</p>
+                <p><a href="{{ path('user_show', {'id': user.id}) }}">{{ user.pseudo }}</a></p>
             {% endfor %}</div>
 
 

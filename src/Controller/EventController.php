@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Form\EventDeleteType;
 use App\Form\EventType;
+use App\Form\QueryType;
 use App\Memory;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
+use App\ToolKitBQP;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,16 +21,38 @@ class EventController extends AbstractController
 {
     /*
      * voir toutes les sorties
-     * avec filtre
+     * avec filtre par queryForm
      */
     #[Route('/', name: '_index')]
     public function showAll(
-        EventRepository $evRepo
+        EntityManagerInterface $em,
+        EventRepository        $evRepo,
+        ToolKitBQP             $tool,
+        Request                $request
     ): Response
     {
-        $events = $evRepo->findAll();
-        $event = $evRepo->findOneBy(['id' => '2']);
+        //call archivage automatique à chaque accès au site
+        $tool->autoArchive($em, $evRepo);
+        //filtrage par la liste
+        $research = $request->query->all('query');
+        $keys = ['name', 'school', 'dateMin', 'dateMax'];
+        $specifiedQuery = false;
+        foreach ($keys as $key) {
+            if (isset($research[$key])){
+                $specifiedQuery = true;
+            };
+        }
+        // TODO include organizer.id si boolean 'organizer'
+        //obtenir les evenements tous ou par filtre
+        if ($specifiedQuery) {
+            $events = $evRepo->findByField($research);
+        } else {
+            $events = $evRepo->findAll();
+        }
+        //passer le formulaire type au twig
+        $form = $this->createForm(QueryType::class);
         return $this->render('event/index.html.twig', [
+            'form' => $form,
             'events' => $events
         ]);
     }
@@ -117,8 +141,7 @@ class EventController extends AbstractController
         int                    $id,
         EntityManagerInterface $em,
         Request                $request,
-        EventRepository        $evRepo,
-        UserRepository         $userRepo
+        EventRepository        $evRepo
     ): Response
     {
 
@@ -152,12 +175,12 @@ class EventController extends AbstractController
         int                    $id,
         EventRepository        $evRepo,
         EntityManagerInterface $em,
-        UserRepository         $userRepo,
-        Request                $request
+        Request                $request,
+        ToolKitBQP             $tool
     ): Response
     {
         //retrouver l'event en database
-        $event = $evRepo->find($id);;
+        $event = $evRepo->find($id);
         //si ni admin ni son propre event retour case départ
         if (!$this->isGranted('ROLE_ADMIN') &&
             !$this->getUser()->getUserIdentifier() == $event->getOrganizer()->getEmail()) {
@@ -171,21 +194,9 @@ class EventController extends AbstractController
             $event->setCancelReason($form->get('cancel_reason')->getData());
 
             //TODO envoyer un mail aux participants  function cancel($event)
+            //archivage
+            $tool->archive($event, $this->isGranted('ROLE_ADMIN') ? 'ADMIN' : 'USER', $em);
 
-            //transformation en json
-            $json = json_encode($event);
-            $today = new \DateTime('now');
-            $today = json_encode($today->format('d-m-Y H:i:s'));
-
-            //écriture du json dans le fichier archive
-            $archiveFile = fopen(realpath("../public/archives.txt"), 'r+');
-            fwrite($archiveFile, $today);
-            fwrite($archiveFile, $json);
-            fclose($archiveFile);
-
-            //suppression de l'objet en db
-            $em->remove($event);
-            $em->flush();
             return $this->redirectToRoute('event_index');
         }
         return $this->render('event/delete.html.twig', [

@@ -3,13 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\EventRepository;
+use App\ToolKitBQP;
 use DateTime;
-use App\toolKitBQP;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use http\Message;
 use JsonSerializable;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -265,7 +264,7 @@ class Event implements JsonSerializable
 
     public function getState(): string
     {
-        $today=new \DateTime('now');
+        $today=new DateTime('now');
         if($this->dateFinish < $today){
             return 'FINISHED';
         }else if($this->dateStart < $today){
@@ -291,6 +290,5 @@ class Event implements JsonSerializable
 
         return $this;
     }
-
 
 }
