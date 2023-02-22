@@ -3,23 +3,45 @@
 {% block title %}{{ edit? 'Modifier':'Créer' }} un evenement - {{ parent() }}{% endblock %}
 
 {% block body %}
-    <h2>{{ edit? 'Modifier un ':'Creer un nouvel' }} evenement</h2>
-    {{ form_start(form) }}
-    {{ form_start(form) }}
-    {{ form_row(form.name) }}
-    {{ form_row(form.dateStart) }}
-    {{ form_row(form.dateFinish) }}
-    {{ form_row(form.peopleMax) }}
-    {{ form_row(form.description) }}
-    {{ form_row(form.location) }}
-    <div id="loc_create">(+)</div>
-    {{ form_row(form.dateLimit) }}
-    <button>{{ edit? 'Appliquer':'Créer' }}</button>
-    {{ form_end(form) }}
-    <div><label for="school_name">Ecole de rattachement</label>
-        <p id="school_name">{{ app.user.school.name }}</p></div>
+
+    <div class="format">
+        <div class="champForm">
+            <h2>{{ edit? 'Modifier un ':'Creer un nouvel' }} Evènement</h2>
+        </div>
+        {{ form_start(form) }}
+        <div class="champForm">
+            {{ form_row(form.name) }}
+        </div>
+        <div class="champForm">
+            {{ form_row(form.dateStart)}}
+        </div>
+        <div class="champForm">
+            {{ form_row(form.dateFinish) }}
+        </div>
+        <div class="champForm">
+            {{ form_row(form.peopleMax) }}
+        </div>
+        <div class="champForm">
+            {{ form_row(form.description) }}
+        </div>
+        <div class="champForm">
+            {{ form_row(form.location) }}
+        </div>
+        <div id="loc_create">(+)</div>
+
+        <div class="champForm">
+            {{ form_row(form.dateLimit) }}
+        </div>
+        <button class="button is-primary is-rounded">{{ edit? 'Appliquer':'Créer' }}</button>
+        {{ form_end(form) }}
+
+        <div><label for="school_name">Ecole de rattachement</label>
+            <p id="school_name">{{ app.user.school.name }}</p></div>
+
+        <a class="button is-primary is-rounded" href="{{ path('home_index') }}">Retour à L'accueil</a>
+    </div>
+
     <div id="hidden">{{ path('location_create') }}</div>
-    <a href="{{ path('home_index') }}">Retour à L'accueil</a>
 {% endblock %}
 {% block javascripts %}
     <script src="{{ asset('JS/addNewLocation.js') }}"></script>
