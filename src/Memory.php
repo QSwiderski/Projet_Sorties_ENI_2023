@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\InputBag;
  * service de mémorisation d'un objet App\Event
  * depuis un objet HTTPFoundation/request fourni par controller
  */
+
 class Memory
 {
     private static $userevent = [];
@@ -23,19 +24,23 @@ class Memory
         $request = clone $requestToSave;
         $event = new Event();
         $event->setName($request->get('mem_name'));
+        //transformation de la chaine date en datetime si non null
         if ($dateStart = $request->get('mem_dateStart')) {
-            $event->setDateStart(date_create_from_format('d/m/Y H:i:s', $dateStart));
+            $dateStart = new \DateTime(date('Y-m-d h:i:s', strtotime($dateStart)));
+            $event->setDateStart($dateStart);
         }
         if ($dateFinish = $request->get('mem_dateFinish')) {
-            $event->setDateFinish(date_create_from_format('d/m/Y H:i:s', $dateFinish));
+            $dateFinish = new \DateTime(date('Y-m-d h:i:s', strtotime($dateFinish)));
+            $event->setDateFinish($dateFinish);
         }
         if ($dateLimit = $request->get('mem_dateLimit')) {
-            $event->setDateLimit(date_create_from_format('d/m/Y H:i:s', $dateLimit));
+            $dateLimit = new \DateTime(date('Y-m-d h:i:s', strtotime($dateLimit)));
+            $event->setDateLimit($dateLimit);
         }
         $event->setPeopleMax(intval($request->get('mem_peopleMax')));
         $event->setDescription($request->get('mem_description'));
         self::$userevent[$email] = $event;
-        //        dd(self::$userevent);
+//                dd(self::$userevent);
     }
 
 

@@ -19,6 +19,7 @@ class EventController extends AbstractController
 {
     /*
      * voir toutes les sorties
+     * avec filtre
      */
     #[Route('/', name: '_index')]
     public function showAll(
