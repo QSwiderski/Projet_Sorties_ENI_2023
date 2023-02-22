@@ -9,12 +9,11 @@
         <a href={{ path('event_create') }}>Nouveau Event</a><br>
         <table>
             <tr>
-                <th>nom</th>
-                <th>debut</th>
-                <th>clôture</th>
-                <th>participants</th>
+                <th>Quoi? (par qui?)</th>
+                <th>Où ?</th>
+                <th>De quand à quand ?</th>
+                <th>Combien viennent?</th>
                 <th>etat</th>
-                <th>organisateur</th>
                 <th>actions</th>
             </tr>
             {% set nbresult = 0 %}
@@ -23,9 +22,13 @@
                     {% set nbresult = nbresult + 1 %}
                     <tr>
                         {# TODO Afficher une icone en fonction du type d'event #}
-                        <td><a href="{{ path('event_show', {'id': event.id}) }}">{{ event.name }}</a></td>
-                        <td>{{ event.dateStart.format('d/m/Y H:i') }}</td>
-                        <td>{{ event.dateLimit.format('d/m/Y H:i') }}</td>
+                        <td><p><a href="{{ path('event_show', {'id': event.id}) }}">{{ event.name }}</a></p>
+                            <p> par <a href="{{ path('user_show', {'id': event.organizer.id}) }}">{{ event.organizer.pseudo }}</a></p></td>
+                        <td><p>{{ event.location.name }}</p>
+                            <p>A vol d'oiseau : {{ event.location.distanceFrom(app.user.school) }} Km</p>
+                        </td>
+                        <td><p>{{ event.dateStart.format('d/m/Y H:i') }}</p> à <p>{{ event.dateLimit.format('d/m/Y H:i') }}</p></td>
+
                         <td>{% if event.room %}
                                 {{ event.users.count }} / {{ event.peopleMax }} ( {{ event.room }} places dispo )
                             {% else %}
@@ -33,7 +36,6 @@
                             {% endif %}
                         </td>
                         <td>{{ event.state }}</td>
-                        <td>{{ event.organizer.pseudo }}</td>
                         <td>
                             {% if event.state != 'CLOSED' or is_granted('ROLE_ADMIN') %}
                                 {% if (is_granted('ROLE_ADMIN') or event.organizer == app.user) %}

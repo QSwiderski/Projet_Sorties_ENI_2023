@@ -7,6 +7,7 @@ use App\Form\EventType;
 use App\Memory;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
+use App\ToolKitBQP;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,11 +24,13 @@ class EventController extends AbstractController
      */
     #[Route('/', name: '_index')]
     public function showAll(
-        EventRepository $evRepo
+        EntityManagerInterface $em,
+        EventRepository        $evRepo,
+        ToolKitBQP             $tool
     ): Response
     {
+        $tool->autoArchive($em, $evRepo);
         $events = $evRepo->findAll();
-        $event = $evRepo->findOneBy(['id' => '2']);
         return $this->render('event/index.html.twig', [
             'events' => $events
         ]);
@@ -117,8 +120,7 @@ class EventController extends AbstractController
         int                    $id,
         EntityManagerInterface $em,
         Request                $request,
-        EventRepository        $evRepo,
-        UserRepository         $userRepo
+        EventRepository        $evRepo
     ): Response
     {
 
@@ -152,12 +154,12 @@ class EventController extends AbstractController
         int                    $id,
         EventRepository        $evRepo,
         EntityManagerInterface $em,
-        UserRepository         $userRepo,
-        Request                $request
+        Request                $request,
+        ToolKitBQP             $tool
     ): Response
     {
         //retrouver l'event en database
-        $event = $evRepo->find($id);;
+        $event = $evRepo->find($id);
         //si ni admin ni son propre event retour case départ
         if (!$this->isGranted('ROLE_ADMIN') &&
             !$this->getUser()->getUserIdentifier() == $event->getOrganizer()->getEmail()) {
@@ -171,21 +173,9 @@ class EventController extends AbstractController
             $event->setCancelReason($form->get('cancel_reason')->getData());
 
             //TODO envoyer un mail aux participants  function cancel($event)
+            //archivage
+            $tool->archive($event,$this->isGranted('ROLE_ADMIN')?'ADMIN':'USER', $em);
 
-            //transformation en json
-            $json = json_encode($event);
-            $today = new \DateTime('now');
-            $today = json_encode($today->format('d-m-Y H:i:s'));
-
-            //écriture du json dans le fichier archive
-            $archiveFile = fopen(realpath("../public/archives.txt"), 'r+');
-            fwrite($archiveFile, $today);
-            fwrite($archiveFile, $json);
-            fclose($archiveFile);
-
-            //suppression de l'objet en db
-            $em->remove($event);
-            $em->flush();
             return $this->redirectToRoute('event_index');
         }
         return $this->render('event/delete.html.twig', [

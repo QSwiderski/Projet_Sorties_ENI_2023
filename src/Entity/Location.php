@@ -147,4 +147,17 @@ class Location
 
         return $this;
     }
+
+    /**
+     * @param School $school
+     * @return int approximation kilométrique de distance (par pythagore sur les degrés coordonnées brutes --> donc valable jusqu'à un certain point)
+     */
+    public function getDistanceFrom(School $school){
+        //un degré de longitude fait ~76.13 km à la surface de la terre alentours de nantes
+        $dgKm = 76.13;
+        $longdiff = $this->getLongitude() - $school->getLongitude();
+        $latdiff = $this->getLatitude() - $school->getLatitude();
+        //pythagore arrondi à 0.1km
+        return round(sqrt(pow($latdiff,2) + pow($longdiff,2))*$dgKm,1);
+    }
 }

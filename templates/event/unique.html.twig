@@ -12,6 +12,7 @@
 
         <div>etat : {{ event.state }}</div>
         <div>organisateur : {{ event.organizer.pseudo }}</div>
+        <div>A vol d'oiseau : {{ event.location.distanceFrom(app.user.school) }} Km</div>
         <div> Participants</div>
         <div>{% if event.room %}
                 {{ event.users.count }} / {{ event.peopleMax }} ( {{ event.room }} places dispo )
