@@ -2,51 +2,9 @@
 
 @font-face {
     font-family: 'neon_font';
-    src: url('../public/fonts/Night Club 70s Bold.ttf') format('truetype');
-}
-
-.is-primary {
-    background-color: var(--glow-color);;
-}
-
-.header {
-    width: 100%;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0;
-}
-
-.form-container {
-    width: min-content;
-    display: inline-block;
-}
-
-.logo {
-    display: grid;
-    grid-template-columns: auto 1fr;
-}
-
-#logo {
-    height: 10rem;
-}
-
-
-.columns {
-    align-items: center;
-    margin: 0;
-    padding: 0;
-    justify-items: center;
-}
-
-:root {
-    --glow-color: hsl(186 100% 69%);
-}
-
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
+    font-display: auto;
+    font-weight: auto;
+    src: url('../font/NeonRetroDemoVersionRegular-rgPdx.otf') format('opentype');
 }
 
 html,
@@ -60,14 +18,76 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, .6)), url("../images/synthwavebg.jpg");
+    background: linear-gradient(rgba(0, 0, 0, 0.3),
+    rgba(0, 0, 0, 0.6)),
+    url("../images/bg.jpg");
     background-size: cover;
+}
 
+.is-primary {
+    background-color: var(--glow-color);;
+}
+
+header {
+    position: absolute;
+    padding: 10px;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.logo {
+    margin: 12px;
+}
+
+.head {
+    margin-top: 20px;
+}
+
+.grid-container-four {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-container-three {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-one {
+    grid-column: 1/2;
+}
+
+.grid-two {
+    grid-column: 2/3;
+}
+
+.grid-three {
+    grid-column: 3/4;
+}
+
+.grid-four {
+    grid-column: 4/5;
+}
+
+#logo {
+    height: 11rem;
+}
+
+:root {
+    --glow-color: hsl(186 100% 69%);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
 
-/* CSS du bouton magique*/
+/**vvvvvvvvvvvv  CSS du bouton magique  vvvvvvvvvvvvv******/
 .glowing-btn {
     position: absolute;
     color: var(--glow-color);
@@ -82,24 +102,24 @@ body {
     font-weight: 900;
     letter-spacing: 0.1em;
 
-    -webkit-box-shadow: inset 0px 0px 0.5em 0px var(--glow-color),
-    0px 0px 0.5em 0px var(--glow-color);
-    -moz-box-shadow: inset 0px 0px 0.5em 0px var(--glow-color),
-    0px 0px 0.5em 0px var(--glow-color);
-    box-shadow: inset 0px 0px 0.5em 0px var(--glow-color),
-    0px 0px 0.5em 0px var(--glow-color);
-    animation: border-flicker 2s linear infinite;
+    -webkit-box-shadow: inset 0 0 0.5em 0 var(--glow-color),
+    0 0 0.5em 0 var(--glow-color);
+    -moz-box-shadow: inset 0 0 0.5em 0 var(--glow-color),
+    0 0 0.5em 0 var(--glow-color);
+    box-shadow: inset 0 0 0.5em 0 var(--glow-color),
+    0 0 0.5em 0 var(--glow-color);
+    animation: border-flicker 4s linear infinite;
 }
 
 .glowing-txt {
     float: left;
     margin-right: -0.8em;
-    -webkit-text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3),
+   -webkit-text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3),
     0 0 0.45em var(--glow-color);
     -moz-text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3),
     0 0 0.45em var(--glow-color);
     text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3), 0 0 0.45em var(--glow-color);
-    animation: text-flicker 3s linear infinite;
+    animation: text-flicker 4s linear infinite;
 }
 
 .glowing-btn::before {
@@ -111,10 +131,11 @@ body {
     right: 0;
     opacity: 0.7;
     filter: blur(1em);
-    transform: translateY(120%) rotateX(95deg) scale(1, 0.35);
+    transform: translateY(120%) rotateX(95deg) scale(1, 0.25);
     background: var(--glow-color);
     pointer-events: none;
 }
+
 .glowing-btn::after {
     content: "";
     position: absolute;
@@ -149,70 +170,27 @@ body {
 }
 
 @keyframes text-flicker {
-    0% {
-        opacity: 0.1;
-    }
-
-    2% {
-        opacity: 1;
-    }
-
-    8% {
-        opacity: 0.1;
-    }
-
-    9% {
-        opacity: 1;
-    }
-
-    12% {
-        opacity: 0.1;
-    }
-    20% {
-        opacity: 1;
-    }
-    25% {
-        opacity: 0.3;
-    }
-    30% {
-        opacity: 1;
-    }
-
-    70% {
-        opacity: 0.7;
-    }
-    72% {
-        opacity: 0.2;
-    }
-
-    77% {
-        opacity: 0.9;
-    }
-    100% {
-        opacity: 0.9;
-    }
+    0% { opacity: 0.1; }
+    2% { opacity: 1;   }
+    8% { opacity: 0.1; }
+    9% { opacity: 1;   }
+    12% { opacity: 0.1; }
+    20% { opacity: 1;   }
+    25% { opacity: 0.3; }
+    30% { opacity: 1;   }
+    70% { opacity: 0.7; }
+    72% { opacity: 0.8; }
+    77% { opacity: 0.9; }
+    100% { opacity: 0.9; }
 }
 
 @keyframes border-flicker {
-    0% {
-        opacity: 0.1;
-    }
-    2% {
-        opacity: 1;
-    }
-    4% {
-        opacity: 0.1;
-    }
-
-    8% {
-        opacity: 1;
-    }
-    70% {
-        opacity: 0.7;
-    }
-    100% {
-        opacity: 1;
-    }
+    0% { opacity: 0.1; }
+    2% { opacity: 1;   }
+    4% { opacity: 0.1; }
+    8% { opacity: 1;   }
+    70% { opacity: 0.7; }
+    100% { opacity: 1;  }
 }
 
 @media only screen and (max-width: 600px) {
@@ -220,7 +198,7 @@ body {
         font-size: 5px;
     }
 }
-
+/**^^^^^^^^^^^^  CSS du bouton magique  ^^^^^^^^^^******/
 
 input, select {
     border: 2px solid transparent;
@@ -236,15 +214,16 @@ input, select {
     0 0 30px rgba(249, 76, 255, 0.85),
     0 0 92px rgba(247, 0, 255, 0.85);
 }
+.panel{
 
+
+}
+.corpus {
     filter: blur(-3px);
     border-radius: 80px;
+    align-self: center;
     align-content: center;
     padding-top: 1rem;
-}
-
-div {
-    /*border: 1px solid mediumpurple;*/
 }
 
 
@@ -305,19 +284,21 @@ table {
     color: rgba(245, 255, 250, 0.91);
 }
 
-.table-container{
-margin-left: auto;
-margin-right: auto;
-height: 20rem;
-overflow-y: visible;
+.table-container {
+    margin-left: auto;
+    margin-right: auto;
+    height: 20rem;
+    overflow-y: visible;
 }
 
-tr:hover {background-color: rgba(30, 220, 209, 0.5);}
+tr:hover {
+    background-color: rgba(30, 220, 209, 0.5);
+}
 
 
-th{
+th {
     background-color: rgba(0, 0, 0, 0.25);
-    height : 20px;
+    height: 20px;
     font-size: 1.4em;
     color: rgba(3, 250, 122, 0.91);
 }
@@ -419,7 +400,6 @@ h1 {
     background: -ms-radial-gradient(center, ellipse cover, #87e0fd 0%, #53cbf1 40%, #05abe0 100%); /* IE10+ */
     background: radial-gradient(ellipse at center, #87e0fd 0%, #53cbf1 40%, #05abe0 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#87e0fd', endColorstr='#05abe0', GradientType=1); /* IE6-9 fallback on horizontal gradient */
-
 }
 
 .to-left {
@@ -432,7 +412,7 @@ h1 {
 
 .state_img {
     width: 60px;
-    filter:invert(.9);
+    filter: invert(.9);
 }
 
 .glow-blue, a {
@@ -444,6 +424,7 @@ h1 {
     0 0 21px #c2f0ff,
     0 0 42px #87e0fd;
 }
+
 .glow-yellow, h1, h2, h3, p, label, td, th {
     font-family: neon_font, serif;
     color: #e0bc05;
@@ -451,6 +432,7 @@ h1 {
     0 0 20px #d3ae33,
     0 0 40px #ab7d08;
 }
+
 .glow-green {
     font-family: neon_font, serif;
     color: #6bff16;
@@ -480,24 +462,27 @@ input, select {
     0 0 21px #c2f0ff,
     0 0 42px #87e0fd;
 }
+
 .UNPUBLISHED {
     box-shadow: 0 0 7px #ffe780,
     0 0 20px #d3ae33,
     0 0 40px #ab7d08;
 }
+
 .PUBLISHED {
     box-shadow: 0 0 7px #a4ff80,
     0 0 20px #68d333,
     0 0 40px #2bab08;
 }
+
 .CLOSED, .FINISHED {
     box-shadow: 0 0 7px #ff8080,
     0 0 20px #d33333,
     0 0 40px #ab0808;
 }
+
 .state_img {
     width: 60px;
-    filter:invert(.9);
+    filter: invert(.9);
     border-radius: 30px;
 }
-
