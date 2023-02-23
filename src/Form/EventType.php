@@ -28,7 +28,7 @@ class EventType extends AbstractType
                 ]
             )
             ->add('description')
-            ->add('name', NumberType::class, [
+            ->add('peopleMax', NumberType::class, [
                 'label' => 'Limite d\'invités (optionnelle)'
             ])
             ->add('dateStart', DateTimeType::class, ['widget' => 'single_text',
