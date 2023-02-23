@@ -4,7 +4,15 @@
 
 {% block body %}
 
+    <div>
+        <form action={{ path('user_index') }} method="GET" name="Formulaire">
+            Recherche par nom: <input name="Research" type="text" id="Research" size="30">
+            <input type="submit" value="Recherche">
+        </form>
+    </div>
+
     <h1>Liste des utilisateurs inscrits</h1>
+
 
     <div>
         {% for user in users %}
