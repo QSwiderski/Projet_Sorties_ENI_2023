@@ -15,7 +15,11 @@
     top: 0px;
     left: 0px;
     right: 0;
+}
 
+.form-container {
+    width: min-content;
+    display: inline-block;
 }
 
 .logo {
@@ -111,8 +115,6 @@ body {
     background: var(--glow-color);
     pointer-events: none;
 }
-
-
 .glowing-btn::after {
     content: "";
     position: absolute;
@@ -219,6 +221,7 @@ body {
     }
 }
 
+
 input, select {
     border: 2px solid transparent;
     border-radius: 4px;
@@ -234,8 +237,6 @@ input, select {
     0 0 92px rgba(247, 0, 255, 0.85);
 }
 
-.container {
-    background-color: #e94def33;
     filter: blur(-3px);
     border-radius: 80px;
     align-content: center;
@@ -267,7 +268,7 @@ div {
 label {
     display: inline-grid;
     width: 150px;
-    text-align: right;
+    text-align: center;
 }
 
 
@@ -296,39 +297,47 @@ body {
 }
 
 table {
-    table-layout: fixed;
+    table-layout: auto;
     width: 100%;
     border-collapse: collapse;
     border: 1px solid black;
     padding: 5px;
+    color: rgba(245, 255, 250, 0.91);
 }
 
-th {
-    background-color: gray;
-    height: 20px;
+.table-container{
+margin-left: auto;
+margin-right: auto;
+height: 20rem;
+overflow-y: visible;
+}
+
+tr:hover {background-color: rgba(30, 220, 209, 0.5);}
+
+
+th{
+    background-color: rgba(0, 0, 0, 0.25);
+    height : 20px;
     font-size: 1.4em;
+    color: rgba(3, 250, 122, 0.91);
 }
 
 th, td {
     padding: 20px;
     margin: 10px;
     text-align: center;
-    border: 2px solid black;
+    border: 2px solid transparent;
 }
 
 td > a {
     font-size: 1.2em;
-    color: mintcream;
+    color: rgba(245, 255, 250, 0.63);
 }
 
 
 #hidden {
     display: none;
 }
-
-/*.btn-container {
-    margin-left: 25%;
-}*/
 
 h1 {
     font-size: 18px;
@@ -430,6 +439,13 @@ h1 {
     0 0 20px #d3ae33,
     0 0 40px #ab7d08;
 }
+
+.to-left {
+    translate: -50%;
+}
+
+.to-right {
+    translate: 50%;
 
 .glow-green {
     font-family: neon_font, serif;

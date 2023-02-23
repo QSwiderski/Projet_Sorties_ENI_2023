@@ -4,42 +4,47 @@
 
 {% block body %}
     <div class="container">
-        <h2>Evenement {{ event.name }}</h2>
+        <h2>Evènement {{ event.name }}</h2>
         <div>nom : {{ event.name }}</div>
-        <div><a href="{{ path('location_show', {'id': event.location.id}) }}">{{ event.location.name }}</a>
-            <a target="_blank"  href="https://www.google.fr/maps?q={{ event.location.latitude }},{{ event.location.longitude }}">Voir sur la carte</a>
+        <br>
+            <div><a class="button is-primary is-outlined" href="{{ path('location_show', {'id': event.location.id}) }}">{{ event.location.name }}</a>
+                <a class="button is-primary is-outlined" target="_blank"  href="https://www.google.fr/maps?q={{ event.location.latitude }},{{ event.location.longitude }}">Voir sur la carte</a>
         </div>
+        <br>
 
-        <div>debut : {{ event.dateStart.format('d/m/Y H:i') }}</div>
-        <div>fin : {{ event.dateFinish.format('d/m/Y H:i') }}</div>
-        <div>clôture : {{ event.dateLimit.format('d/m/Y H:i') }}</div>
+        <div>Début : {{ event.dateStart.format('d/m/Y H:i') }}</div>
+        <div>Fin : {{ event.dateFinish.format('d/m/Y H:i') }}</div>
+        <div>Clôture : {{ event.dateLimit.format('d/m/Y H:i') }}</div>
 
-        <div>etat : {{ event.state }}</div>
-        <div>organisateur : {{ event.organizer.pseudo }}</div>
+        <div>Etat : {{ event.state }}</div>
+        <div>Organisateur : {{ event.organizer.pseudo }}</div>
         <div>A vol d'oiseau : {{ event.location.distanceFrom(app.user.school) }} Km</div>
-        <div> Participants</div>
+        <br>
+        <div>Participants</div>
         <div>{% if event.room %}
                 {{ event.users.count }} / {{ event.peopleMax }} ( {{ event.room }} places dispo )
             {% else %}
                 {{ event.users.count }} (Pas de limite)
             {% endif %}</div>
+            <br>
         <div>{% for user in event.users %}
-                <p><a href="{{ path('user_show', {'id': user.id}) }}">{{ user.pseudo }}</a></p>
+                <p><a class="button is-primary is-outlined" href="{{ path('user_show', {'id': user.id}) }}">{{ user.pseudo }}</a></p>
             {% endfor %}</div>
 
+            <br>
 
-    </div>
     {% if event.state != 'CLOSED' or is_granted('ROLE_ADMIN') %}
-        <div>
+
             {% if (is_granted('ROLE_ADMIN') or event.organizer == app.user) %}
-                <a href={{ path('event_edit', {'id': event.id}) }}>Modifier</a>
-                <a href={{ path('event_remove',{'id':event.id}) }}>Supprimer</a>
+                <a class="button is-warning is-outlined" href={{ path('event_edit', {'id': event.id}) }}>Modifier</a>
+                <a class="button is-danger is-outlined" href={{ path('event_remove',{'id':event.id}) }}>Supprimer</a>
             {% endif %}
-            <a href="{{ path('event_apply',{'id':event.id}) }}">{{ (app.user in event.users)? 'Ne plus participer':'Participer' }}</a>
+            <a class="button is-primary is-outlined" href="{{ path('event_apply',{'id':event.id}) }}">{{ (app.user in event.users)? 'Ne plus participer':'Participer' }}</a>
             {% if (event.state == 'UNPUBLISHED') %}
-                <a href="{{ path('event_publish',{'id':event.id}) }}">Publier</a>
+                <a class="button is-primary is-outlined" href="{{ path('event_publish',{'id':event.id}) }}">Publier</a>
             {% endif %}
-        </div>
+
     {% endif %}
-    <a href="{{ path('home_index') }}">Retour à L'accueil</a>
+    <a class="button is-primary is-outlined" href="{{ path('home_index') }}">Retour à L'accueil</a>
+    </div>
 {% endblock %}

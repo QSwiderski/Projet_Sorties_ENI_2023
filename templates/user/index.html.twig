@@ -4,31 +4,42 @@
 
 {% block body %}
 
-    <div>
+<div class="container">
+<h1>Liste des utilisateurs inscrits</h1>
+    <br>
+    <div class="form-container>
         <form action={{ path('user_index') }} method="GET" name="Formulaire">
             Recherche par nom: <input name="Research" type="text" id="Research" size="30">
-            <input type="submit" value="Recherche">
+            <button class="glowing-btn glowing to-right" >Rechercher</button>
+            //TODO verifier le bon fonctionnement du bouton
         </form>
     </div>
-
-    <h1>Liste des utilisateurs inscrits</h1>
-
-
-    <div>
+    <br>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th> Nom</th>
+                    <th> Téléphone</th>
+                    <th> Email</th>
+                    <th> ID</th>
+                    <th> Actions</th>
+                </tr>
         {% for user in users %}
-        <div>
-            <div>{{ user.surname }} {{ user.name }}</div>
-            <div>{{ user.email }}</div>
-            <div>{{ user.phone }}</div>
-            <div>ID : {{ user.id }} {{ 'ROLE_ADMIN' in user.roles ? '( Administrateur )' : '' }}</div>
-            <div>
-                <a href="{{ path('user_show', {'id': user.id}) }}">Voir</a>
-                <a href="{{ path('user_edit', {'id': user.id}) }}">Modifier</a>
-                <a href="{{ path('user_delete', {'id': user.id}) }}">Supprimer</a>
-            </div>
-        </div>
+        <tr>
+            <td>{{ user.surname }} {{ user.name }}</td>
+            <td>{{ user.phone }}</td>
+            <td>{{ user.email }}</td>
+            <td>ID : {{ user.id }} {{ 'ROLE_ADMIN' in user.roles ? 'Administrateur' : '' }}</td>
+            <td>
+                <a class="button is-primary is-outlined" href="{{ path('user_show', {'id': user.id}) }}">Voir</a>
+                <a class="button is-warning is-outlined" href="{{ path('user_edit', {'id': user.id}) }}">Modifier</a>
+                <a class="button is-danger is-outlined" href="{{ path('user_delete', {'id': user.id}) }}">Supprimer</a>
+            </td>
+        </tr>
         {% endfor %}
+    </table>
     </div>
-
-    <a href="{{ path('user_create') }}">Créer un nouvel utilisateur</a>
+    <br>
+    <a class="glowing-btn glowing-txt to-left" href="{{ path('user_create') }}">Créer un nouvel utilisateur</a>
+</div>
 {% endblock %}
