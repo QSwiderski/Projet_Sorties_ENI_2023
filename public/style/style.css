@@ -11,7 +11,11 @@
     top: 0px;
     left: 0px;
     right: 0;
+}
 
+.form-container {
+    width: min-content;
+    display: inline-block;
 }
 
 .logo{
@@ -53,7 +57,7 @@ body {
     justify-content: center;
     align-items: center;
 
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, .6)), url("../images/bg.jpg");
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, .6)), url("../images/synthwavebg.jpg");
     background-size: cover;
 
 }
@@ -106,8 +110,6 @@ body {
     background: var(--glow-color);
     pointer-events: none;
 }
-
-
 .glowing-btn::after {
     content: "";
     position: absolute;
@@ -207,14 +209,14 @@ body {
     }
 }
 
-input {
+input, select, .scroll {
     border: 2px solid #000000;
     border-radius: 4px;
-    background: #C85DFC;
+    background: rgba(200, 93, 252, 0.84);
 }
 
 .container{
-    background-color: #e94def33;
+    background-color: rgba(233, 77, 239, 0.09);
     filter: blur(-3px);
     border-radius: 80px;
     align-content: center;
@@ -244,7 +246,7 @@ div {
 label {
     display: inline-grid;
     width: 150px;
-    text-align: right;
+    text-align: center;
 }
 
 
@@ -273,26 +275,42 @@ body {
 }
 
 table {
-    table-layout: fixed;
+    table-layout: auto;
     width: 100%;
     border-collapse: collapse;
     border: 1px solid black;
     padding: 5px;
+    color: rgba(245, 255, 250, 0.91);
 }
+
+.table-container{
+margin-left: auto;
+margin-right: auto;
+height: 20rem;
+overflow-y: visible;
+}
+
+
+tr:hover {background-color: rgba(30, 220, 209, 0.5);}
+
+
 th{
-    background-color:gray;
+    background-color: rgba(0, 0, 0, 0.25);
     height : 20px;
     font-size: 1.4em;
+    color: rgba(3, 250, 122, 0.91);
 }
+
 th, td {
     padding: 20px;
     margin: 10px;
     text-align: center;
     border: 2px solid black;
+
 }
 td>a{
     font-size: 1.2em;
-    color: mintcream;
+    color: rgba(245, 255, 250, 0.63);
 }
 
 
@@ -300,10 +318,6 @@ td>a{
 #hidden {
     display: none;
 }
-
-/*.btn-container {
-    margin-left: 25%;
-}*/
 
 h1 {
     font-size: 18px;
@@ -383,3 +397,10 @@ h1 {
 
 }
 
+.to-left {
+    translate: -50%;
+}
+
+.to-right {
+    translate: 50%;
+}

@@ -3,18 +3,42 @@
 {% block title %}Lieux de Sortie - {{ parent() }}{% endblock %}
 
 {% block body %}
+
     <div class="container">
         <h2>Lieux de sortie :</h2>
-        <a href={{ path('location_create') }}>Nouveau Lieu</a><br>
-            {% for location in locations %}
-                <div>
-                    <div><a href="{{ path('location_show', {'id': location.id}) }}">{{ location.name }}</a></div>
-                    <div>{{ location.adress }}</div>
-                    <div>{{ location.postcode }}</div>
-                    <div>{{ location.city }}</div>
-                    <div>Aux Coordonnées :{{ location.latitude }};{{ location.longitude }} <a target="_blank"  href="https://www.google.fr/maps?q={{ location.latitude }},{{ location.longitude }}">Voir sur la carte</a></div>
-                    <div><a href={{ path('location_edit', {'id': location.id}) }}>Modifier</a>&nbsp&nbsp&nbsp<a href={{ path('location_delete',{'id':location.id}) }}>Supprimer</a></div>
-                </div>
-            {% endfor %}
+        <a class="glowing-btn glowing-txt to-left" href={{ path('location_create') }}>Nouveau Lieu</a><br>
+        <br>
+        <br>
+
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th> Nom</th>
+                        <th> Adresse</th>
+                        <th> Code Postal</th>
+                        <th> Ville</th>
+                        <th> Coordonnées</th>
+                        <th> Actions</th>
+                    </tr>
+                    {% for location in locations %}
+                    <tr>
+                        <td>
+                            <p><a href="{{ path('location_show', {'id': location.id}) }}">{{ location.name }}</a></p>
+                        </td>
+                        <td><p>{{ location.adress }}</p></td>
+                        <td><p>{{ location.postcode }}</p></td>
+                        <td><p>{{ location.city }}</p></td>
+                        <td><p>Aux Coordonnées: {{ location.latitude }};{{ location.longitude }}
+                        <a class="button is-primary is-outlined" target="_blank" href="https://www.google.fr/maps?q={{ location.latitude }},{{ location.longitude }}">Voir
+                                    sur la carte</a></p></td>
+
+                        <td><p><a class="button is-warning is-outlined" href={{ path('location_edit', {'id': location.id}) }}>Modifier</a>&nbsp&nbsp&nbsp
+                                <a class="button is-danger is-outlined" href={{ path('location_delete',{'id':location.id}) }}>Supprimer</a></p></td>
+
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
     </div>
 {% endblock %}

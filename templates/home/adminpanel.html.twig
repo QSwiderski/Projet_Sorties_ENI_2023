@@ -3,12 +3,28 @@
 {% block title %}ADMIN PANEL - {{ parent() }}{% endblock %}
 
 {% block body %}
+    <div class="container">
 <h1>Controles administrateur</h1>
+        <br>
     <h2>gestion utilisateurs</h2>
-    <a href="{{ path('user_index') }}">Voir tous les utilisateurs</a>
-    <a href="{{ path('user_create') }}">Créer un nouveau compte</a>
+        <br>
+    <a class="glowing-btn glowing-txt to-left" href="{{ path('user_index') }}">Voir tous les utilisateurs</a>
+        <br>
+        <br>
+        <br>
+    <a class="glowing-btn glowing-txt to-left" href="{{ path('user_create') }}">Créer un nouveau compte</a>
+        <br>
+        <br>
+        <br>
     <h2>gestion sites ecoles</h2>
-    <a href="{{ path('school_index') }}">Voir tous les sites</a>
+        <br>
+    <a class="glowing-btn glowing-txt to-left" href="{{ path('school_index') }}">Voir tous les sites</a>
+        <br>
+        <br>
+        <br>
     <h2>gestion lieux de sortie</h2>
-    <a href="{{ path('location_index') }}">Voir tous les lieux</a>
+        <br>
+    <a class="glowing-btn glowing-txt to-left" href="{{ path('location_index') }}">Voir tous les lieux</a>
+        <br>
+    </div>
 {% endblock %}

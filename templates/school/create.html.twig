@@ -2,13 +2,14 @@
 
 
 {% block body %}
-    <div>
+    <div class="container">
         <h2>{{ modify? 'Modifier ' :'Ajouter ' }}un site de rattachement</h2>
         {{ form_start(schoolForm) }}
         <p>Nom du site : {{ form_widget(schoolForm.name) }}</p>
         <p>Latitude : {{ form_widget(schoolForm.latitude) }}</p>
         <p>Longitude : {{ form_widget(schoolForm.longitude) }}</p>
-        <button>{% if (modify) %} Enregistrer la modification {% else %} Enregistrer {% endif %}</button>
+        <br>
+        <button class="glowing-btn glowing-txt to-left">{% if (modify) %} Enregistrer la modification {% else %} Enregistrer {% endif %}</button>
         {{ form_end(schoolForm) }}
     </div>
 {% endblock %}
