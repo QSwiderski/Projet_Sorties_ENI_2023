@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}Liste des sites - {{ parent() }}{% endblock %}
 {% block body %}
     <h2>Gérer les sites</h2>
     <h3>Filtrer les sites</h3>
@@ -40,8 +40,3 @@
     <td><a href="{{ path('school_create') }}">Ajouter un site</a></td>
 
 {% endblock %}
-
-{% block title %}
-
-{% endblock %}
-

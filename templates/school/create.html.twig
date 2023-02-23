@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}{{ modify? 'Modifier' :'Ajouter ' }} un site - {{ parent() }}{% endblock %}
 
 {% block body %}
     <div>
@@ -11,9 +11,5 @@
         <button>{% if (modify) %} Enregistrer la modification {% else %} Enregistrer {% endif %}</button>
         {{ form_end(schoolForm) }}
     </div>
-{% endblock %}
-
-{% block title %}
-
 {% endblock %}
 
