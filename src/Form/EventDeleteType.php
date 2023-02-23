@@ -19,11 +19,11 @@ class EventDeleteType extends AbstractType
                     "required"=>true,
                     'constraints' => [
                         new NotBlank([
-                            'message' => 'Please give us a good reason',
+                            'message' => 'Merci de donner une raison de suppression',
                         ]),
                         new Length([
                             'min' => 6,
-                            'minMessage' => 'This is considered too short of a reason to cancel such an event',
+                            'minMessage' => 'Navré ceci est trop court pour une raison valable',
                             'max' => 4096,
                         ]),
                     ],

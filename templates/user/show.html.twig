@@ -1,27 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User{% endblock %}
+{% block title %}{{ user.pseudo }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-    <h1>Voir un utilisateur</h1>
+
+    <div class="container">
+        <div class="form-container">
+        <h1>Voir un utilisateur</h1>
+
     <div>
         <label for="user_surname">Prénom</label>:
         <p id="user_surname">{{ user.surname?user.surname:'No Surname' }}</p>
+    </div>
+        <br>
+    <div>
         <label for="user_name">Nom</label>:
         <p id="user_name">{{ user.name?user.name:'No name' }}</p>
     </div>
+        <br>
     <div>
-        <label for='user_phone'>Phone</label>:
-        <p id="user_phone">{{ user.phone?user.phone:'No known phone' }}</p>
+        <label for="user_school">Ecole de rattachement: </label>
+        <a class="button is-primary is-outlined" id="user_school" target="_blank"  href="https://www.google.fr/maps?q={{ user.school.latitude }},{{ user.school.longitude }}">Voir {{ user.school.name }} sur la carte</a>
     </div>
+        <br>
+    <div>
+         <label for='user_phone'>Phone</label>:
+         <p id="user_phone">{{ user.phone?user.phone:'No known phone' }}</p>
+    </div>
+        <br>
     <div>
         <label for="user_email">Email</label>:
         <p id="user_email">{{ user.email }}</p>
     </div>
+    <br>
 
-    <a href="{{ path('user_index') }}">Retour à la Liste</a>
+    <a class="button is-primary is-outlined" href="{{ path('user_index') }}">Retour à la Liste</a>
 
-    <a href="{{ path('user_edit', {'id': user.id}) }}">Modifier</a>
+    <a class="button is-warning is-outlined" href="{{ path('user_edit', {'id': user.id}) }}">Modifier</a>
 
-    <div>{{ include('user/_delete_form.html.twig') }}</div>
+    <div> {{ include('user/_delete_form.html.twig') }}</div>
 {% endblock %}

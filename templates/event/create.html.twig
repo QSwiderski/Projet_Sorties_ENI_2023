@@ -32,13 +32,15 @@
         <div class="champForm">
             {{ form_row(form.dateLimit) }}
         </div>
-        <button class="button is-primary is-rounded">{{ edit? 'Appliquer':'Créer' }}</button>
+        <button class="glowing-btn glowing-txt to-left">{{ edit? 'Appliquer':'Créer' }}</button>
         {{ form_end(form) }}
-
+        <br>
+        <br>
+        <br>
         <div><label for="school_name">Ecole de rattachement</label>
             <p id="school_name">{{ app.user.school.name }}</p></div>
 
-        <a class="button is-primary is-rounded" href="{{ path('home_index') }}">Retour à L'accueil</a>
+        <a class="glowing-btn glowing-txt to-left" href="{{ path('home_index') }}">Retour à L'accueil</a>
     </div>
 
     <div id="hidden">{{ path('location_create') }}</div>

@@ -1,4 +1,4 @@
-
+.idea
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -9,3 +9,5 @@
 /vendor/
 ###< symfony/framework-bundle ###
 /node_modules/
+###> enonce du projet dans le répertoire
+/enonce/

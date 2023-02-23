@@ -27,22 +27,22 @@
 
     <div class = "columns">
         {% if (app.user) %}
-            {% if(is_granted('ROLE_ADMIN')) %}
-                <b class = "column">
-                    <h2><a class="glowing-btn glowing-txt"
-                           href="{{ path('user_show', {'id': app.user.id}) }}">{{ app.user.pseudo }}</a></h2>
-                </b>
 
-            {% endif %}
-            <b class = "column">
+                <div class = "column">
+                    <h2><a class="glowing-btn glowing-txt"
+                           href="{{ path('user_show', {'id': app.user.id}) }}">Mon Profil</a></h2>
+                </div>
+
+        {% if(is_granted('ROLE_ADMIN')) %}
+            <div class = "column">
                 <h2><a class="glowing-btn glowing-txt"
                        href="{{ path('home_admin') }}">Administrer</a></h2>
-            </b>
-
-            <b class = "column">
+            </div>
+        {% endif %}
+            <div class = "column">
                 <h2><a class="glowing-btn glowing-txt"
                        href="{{ path('app_logout') }}">Deconnexion</a></h2>
-            </b>
+            </div>
         {% else %}
 
             <h2><a class="glowing-btn glowing-txt"
@@ -56,19 +56,16 @@
 </header>
 
 <body>
-
-
-
 {% block body %}{% endblock %}
-
 </body>
 
 
 <footer>
-
-
+    <audio id="bg-audio" src="{{ asset("sound/lady-of-the-80s.mp3") }}"></audio>
+    <audio id="neon-audio" src="{{ asset("sound/neon_on.mp3") }}"></audio>
 </footer>
 
 {% block javascripts %}
 {% endblock %}
+<script src="{{ asset("JS/default.js") }}"></script>
 </html>

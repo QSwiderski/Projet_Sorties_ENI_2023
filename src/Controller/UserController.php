@@ -22,10 +22,19 @@ class UserController extends AbstractController
      */
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/', name: '_index')]
-    public function home(UserRepository $userRepository): Response
+    public function home(UserRepository $userRepository, Request $request): Response
     {
-        $users = $userRepository->findAll();
-        return $this->render('user/index.html.twig', ['users' => $users]);
+        $research = $request->query->get('Research');
+        if ($research == null){
+            $users = $userRepository->findAll();
+        } else {
+            $users = $userRepository->researchBySurname($research);
+        }
+        return $this->render('user/index.html.twig',
+            [
+                'users' => $users,
+                'saisie' => $research
+            ]);
     }
 
     /*

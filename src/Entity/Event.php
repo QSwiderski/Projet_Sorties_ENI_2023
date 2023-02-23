@@ -3,13 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\EventRepository;
+use App\ToolKitBQP;
 use DateTime;
-use App\toolKitBQP;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use http\Message;
 use JsonSerializable;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -26,13 +25,11 @@ class Event implements JsonSerializable
     #[ORM\Column(length: 50)]
     private ?string $name = null;
 
-    #[Assert\GreaterThan(propertyPath: "dateLimit", message: "La date de début d'événement doit être après la date limite d'inscription!")]
     #[Assert\LessThan(propertyPath: "dateFinish", message: "La date de début d'événement doit être avant la date de fin de l'événement!")]
     #[Assert\GreaterThan(new DateTime('now'), message:"La date de l'événement ne peux être antérieur à la date du jour !")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateStart = null;
 
-    #[Assert\GreaterThan(propertyPath: "dateLimit", message: "La date de fin d'événement doit être après la date limite d'inscription!")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateFinish = null;
 
@@ -43,7 +40,7 @@ class Event implements JsonSerializable
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[Assert\GreaterThanOrEqual(1, message: "Le nombre de participant ne peux être inférieur à un personne !")]
+    #[Assert\GreaterThanOrEqual(1, message: "Le nombre de participant ne peux être inférieur à une personne !")]
     #[ORM\Column(nullable: true)]
     private ?int $peopleMax = null;
 
@@ -166,7 +163,8 @@ class Event implements JsonSerializable
     public function setOrganizer(?User $organizer): self
     {
         $this->organizer = $organizer;
-
+        //auto apply pour son event
+        $this->addUser($organizer);
         return $this;
     }
 
@@ -209,7 +207,8 @@ class Event implements JsonSerializable
         return $this;
     }
 
-    private function getUsersAsArray(){
+    private function getUsersAsArray(): array
+    {
         $usersAsArray = [];
         foreach($this->users as $user){
             $usersAsArray[] = $user->getEmail();
@@ -217,10 +216,13 @@ class Event implements JsonSerializable
         return $usersAsArray;
     }
 
-    /*
+    /**
      * ajouter-retirer un utilisateur
+     * @param $applyUser
+     * @return $this|null
      */
-    public function apply($applyUser){
+    public function apply($applyUser): ?static
+    {
         $alreadyin=false;
         foreach($this->users as $user){
             if ($applyUser->getId() == $user->getId()){
@@ -229,12 +231,19 @@ class Event implements JsonSerializable
         }
         if ($alreadyin){
             $this->removeUser($applyUser);
-        }else {
+        }else if ($this->peopleMax == null || $this->getRoom()>0){
             $this->addUser($applyUser);
+        }else {
+            return null;
         }
         return $this;
     }
 
+    /**
+     * transforme les infos d'un objet en texte json
+     * @return mixed
+     *
+     */
     public function jsonSerialize(): mixed
     {
         $tool = new toolKitBQP();
@@ -253,11 +262,22 @@ class Event implements JsonSerializable
         ]);
     }
 
+    /**
+     * @return int|null Indique le nombre de places restantes. Null si aucune limite
+     */
+    public function getRoom(){
+        if($this->peopleMax == null){
+            return null;
+        }
+        return $this->peopleMax - $this->users->count();
+    }
 
-
+    /**
+     * @return string etat actuel calculé à partir des dates et du booléen "ispublished"
+     */
     public function getState(): string
     {
-        $today=new \DateTime('now');
+        $today=new DateTime('now');
         if($this->dateFinish < $today){
             return 'FINISHED';
         }else if($this->dateStart < $today){
@@ -283,6 +303,5 @@ class Event implements JsonSerializable
 
         return $this;
     }
-
 
 }

@@ -1,45 +1,91 @@
-    {% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Evenements - {{ parent() }}{% endblock %}
 
 {% block body %}
 
+
     <div class="container">
-        <h2>Evenements :</h2>
-        <a href={{ path('event_create') }}>Nouveau Event</a><br>
+        <div class="form-container">
+        <a class="glowing-btn glowing-txt to-left" href={{ path('event_create') }}>Nouvel Evènement</a><br>
+            <br>
+            <br>
+        {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.dateMin) }}
+        {{ form_row(form.dateMax) }}
+        {{ form_row((form.school)) }}
+        {{ form_row((form.organizer)) }}
+        <button class="glowing-btn glowing-txt to-left">Filtrer</button>
+        {{ form_end(form) }}
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <div class="table-container">
         <table>
             <tr>
-                <th>nom</th>
-                <th>debut</th>
-                <th>clôture</th>
-                <th>places</th>
-                <th>etat</th>
-                <th>organisateur</th>
-                <th>actions</th>
+                <th>Quoi? (par qui?)</th>
+                <th>Où ?</th>
+                <th>De quand à quand ?</th>
+                <th>Combien viennent?</th>
+                <th>Etat</th>
+                <th>Actions</th>
             </tr>
-        {% for event in events %}
-            {# % if (is_granted('ROLE_ADMIN') || event.organizer == app.user.userIdentifier || event.published) %} #}
-            <tr>
-                {# <div class="{{ wish.category.iconame }}"></div> #}
-                <td><a href="{{ path('event_show', {'id': event.id}) }}">{{ event.name }}</a></td>
-                <td>{{ event.dateStart.format('d/m/Y H:i') }}</td>
-                <td>{{ event.dateLimit.format('d/m/Y H:i') }}</td>
-                {% set usercount = 0 %}
-                {% for user in event.users %}
-                    {% set usercount = usercount + 1 %}
-                {% endfor %}
-                <td>{{ event.peopleMax-usercount }} places dispo ( {{ usercount }} / {{ event.peopleMax }} )</td>
-                <td>{{ event.state }}</td>
-                <td>{{ event.organizer.pseudo }}</td>
-                <td><a href={{ path('event_edit', {'id': event.id}) }}>Modifier</a>
-                    <a href={{ path('event_remove',{'id':event.id}) }}>Supprimer</a>
-                    <a href="{{ path('event_apply',{'id':event.id}) }}">Participer</a>
-                    <a href="{{ path('event_publish',{'id':event.id}) }}">Publier</a>
-                </td>
 
-            </tr>
-    {# {% endif %}#}
-        {% endfor %}
+            {% set nbresult = 0 %}
+            {% for event in events %}
+                {% if (is_granted('ROLE_ADMIN') or event.organizer == app.user or event.published) %}
+                    {% set nbresult = nbresult + 1 %}
+
+                    <tr>
+                        {# TODO Afficher une icone en fonction du type d'event #}
+                        <td>
+                            <p><a class="button is-primary is-outlined" href="{{ path('event_show', {'id': event.id}) }}">{{ event.name }}</a></p>
+                            <p> par <a class="button is-primary is-outlined" href="{{ path('user_show', {'id': event.organizer.id}) }}">{{ event.organizer.pseudo }}</a></p>
+                        </td>
+
+                        <td><a class="button is-primary is-outlined" href="{{ path('location_show', {'id': event.location.id}) }}">{{ event.location.name }}</a>
+                            <a class="button is-primary is-outlined" target="_blank"  href="https://www.google.fr/maps?q={{ event.location.latitude }},{{ event.location.longitude }}">Voir sur la carte</a>
+                            {% if app.user %}
+                            <p>A vol d'oiseau : {{ event.location.distanceFrom(app.user.school) }} Km</p>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <p>{{ event.dateStart.format('d/m/Y H:i') }}</p> à <p>{{ event.dateFinish.format('d/m/Y H:i') }}</p>
+                        </td>
+
+                        <td>{% if event.room %}
+                                {{ event.users.count }} / {{ event.peopleMax }} ( {{ event.room }} places dispo )
+                            {% else %}
+                                {{ event.users.count }} (Pas de limite)
+                            {% endif %}
+                        </td>
+
+                        <td ><img class="{{ event.state }} state_img" src="../images/{{ event.state }}.png" alt="{{ event.state }}"></td>
+
+                        <td>
+                            {% if event.state != 'CLOSED' or is_granted('ROLE_ADMIN') %}
+                                {% if (is_granted('ROLE_ADMIN') or event.organizer == app.user) %}
+                                    <a class="button is-warning is-outlined" href={{ path('event_edit', {'id': event.id}) }}>Modifier</a>
+                                    <a class="button is-danger is-outlined" href={{ path('event_remove',{'id':event.id}) }}>Supprimer</a>
+                                {% endif %}
+                                <a class="button is-primary is-outlined" href="{{ path('event_apply',{'id':event.id}) }}">{{ (app.user in event.users)? 'Ne plus participer':'Participer' }}</a>
+                                {% if (event.state == 'UNPUBLISHED') %}
+                                    <a class="button is-primary is-outlined" href="{{ path('event_publish',{'id':event.id}) }}">Publier</a>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                {% endif %}
+            {% endfor %}
         </table>
+        </div>
+
+        <H1 class="glow-green">Résultats : {{ nbresult }}</H1>
     </div>
 {% endblock %}
