@@ -422,7 +422,20 @@ h1 {
 
 }
 
-.glow-blue {
+.to-left {
+    translate: -50%;
+}
+
+.to-right {
+    translate: 50%;
+
+
+.state_img {
+    width: 60px;
+    filter:invert(.9);
+}
+
+.glow-blue, a {
     font-family: neon_font, serif;
     font-size: 1.3em;
     color: #05abe0;
@@ -431,22 +444,13 @@ h1 {
     0 0 21px #c2f0ff,
     0 0 42px #87e0fd;
 }
-
-.glow-yellow {
+.glow-yellow, h1, h2, h3, p, label, td, th {
     font-family: neon_font, serif;
     color: #e0bc05;
     text-shadow: 0 0 7px #ffe780,
     0 0 20px #d3ae33,
     0 0 40px #ab7d08;
 }
-
-.to-left {
-    translate: -50%;
-}
-
-.to-right {
-    translate: 50%;
-
 .glow-green {
     font-family: neon_font, serif;
     color: #6bff16;
@@ -455,32 +459,45 @@ h1 {
     0 0 40px #2bab08;
 }
 
+input, select {
+    border: 2px solid transparent;
+    border-radius: 4px;
+    color: #96faef;
+    text-shadow: 0 0 9px rgba(135, 224, 253, 0.86),
+    0 0 15px rgba(83, 203, 241, 0.9),
+    0 0 30px #05ABE0FF;
+    background: #6b3881;
+    box-shadow: 0 0 7px #f255ff,
+    0 0 10px #fff,
+    0 0 20px rgba(250, 104, 255, 0.85),
+    0 0 30px rgba(249, 76, 255, 0.85),
+    0 0 92px rgba(247, 0, 255, 0.85);
+}
+
 .STARTED {
     box-shadow: 0 0 7px #53cbf1,
     0 0 10px #fff,
     0 0 21px #c2f0ff,
     0 0 42px #87e0fd;
 }
-
 .UNPUBLISHED {
     box-shadow: 0 0 7px #ffe780,
     0 0 20px #d3ae33,
     0 0 40px #ab7d08;
 }
-
 .PUBLISHED {
     box-shadow: 0 0 7px #a4ff80,
     0 0 20px #68d333,
     0 0 40px #2bab08;
 }
-
 .CLOSED, .FINISHED {
     box-shadow: 0 0 7px #ff8080,
     0 0 20px #d33333,
     0 0 40px #ab0808;
 }
-
 .state_img {
     width: 60px;
     filter:invert(.9);
+    border-radius: 30px;
 }
+

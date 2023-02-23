@@ -7,7 +7,6 @@
 
     <div class="container">
         <div class="form-container">
-        <h2>Evènements :</h2>
         <a class="glowing-btn glowing-txt to-left" href={{ path('event_create') }}>Nouvel Evènement</a><br>
             <br>
             <br>
@@ -15,8 +14,8 @@
         {{ form_row(form.name) }}
         {{ form_row(form.dateMin) }}
         {{ form_row(form.dateMax) }}
-        {{ form_row(form.school) }}
-        {{ form_row(form.organizer) }}
+        {{ form_row((form.school)) }}
+        {{ form_row((form.organizer)) }}
         <button class="glowing-btn glowing-txt to-left">Filtrer</button>
         {{ form_end(form) }}
         </div>
@@ -50,21 +49,24 @@
 
                         <td><a class="button is-primary is-outlined" href="{{ path('location_show', {'id': event.location.id}) }}">{{ event.location.name }}</a>
                             <a class="button is-primary is-outlined" target="_blank"  href="https://www.google.fr/maps?q={{ event.location.latitude }},{{ event.location.longitude }}">Voir sur la carte</a>
-
                             {% if app.user %}
-                                <p>A vol d'oiseau : {{ event.location.distanceFrom(app.user.school) }} Km</p>
+                            <p>A vol d'oiseau : {{ event.location.distanceFrom(app.user.school) }} Km</p>
                             {% endif %}
                         </td>
+
                         <td>
                             <p>{{ event.dateStart.format('d/m/Y H:i') }}</p> à <p>{{ event.dateFinish.format('d/m/Y H:i') }}</p>
                         </td>
+
                         <td>{% if event.room %}
                                 {{ event.users.count }} / {{ event.peopleMax }} ( {{ event.room }} places dispo )
                             {% else %}
                                 {{ event.users.count }} (Pas de limite)
                             {% endif %}
                         </td>
-                        <td class="{{ event.state }}"><img class="state_img" src="../images/{{ event.state }}.png" alt="{{ event.state }}"></td>
+
+                        <td ><img class="{{ event.state }} state_img" src="../images/{{ event.state }}.png" alt="{{ event.state }}"></td>
+
                         <td>
                             {% if event.state != 'CLOSED' or is_granted('ROLE_ADMIN') %}
                                 {% if (is_granted('ROLE_ADMIN') or event.organizer == app.user) %}
@@ -84,6 +86,6 @@
         </table>
         </div>
 
-        <p class="glowing-btn glowing-txt to-left">Résultats : {{ nbresult }}</p>
+        <H1 class="glow-green">Résultats : {{ nbresult }}</H1>
     </div>
 {% endblock %}

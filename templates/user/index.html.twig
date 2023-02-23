@@ -7,11 +7,11 @@
 <div class="container">
 <h1>Liste des utilisateurs inscrits</h1>
     <br>
-    <div class="form-container>
-        <form action={{ path('user_index') }} method="GET" name="Formulaire">
+    <div class="form-container">
+        <form action= "{{ path('user_index')}}" method="GET" name="Formulaire">
             Recherche par nom: <input name="Research" type="text" id="Research" size="30">
             <button class="glowing-btn glowing to-right" >Rechercher</button>
-            //TODO verifier le bon fonctionnement du bouton
+
         </form>
     </div>
     <br>
@@ -42,4 +42,5 @@
     <br>
     <a class="glowing-btn glowing-txt to-left" href="{{ path('user_create') }}">Créer un nouvel utilisateur</a>
 </div>
+
 {% endblock %}
