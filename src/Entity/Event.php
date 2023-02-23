@@ -209,7 +209,8 @@ class Event implements JsonSerializable
         return $this;
     }
 
-    private function getUsersAsArray(){
+    private function getUsersAsArray(): array
+    {
         $usersAsArray = [];
         foreach($this->users as $user){
             $usersAsArray[] = $user->getEmail();
@@ -217,10 +218,13 @@ class Event implements JsonSerializable
         return $usersAsArray;
     }
 
-    /*
+    /**
      * ajouter-retirer un utilisateur
+     * @param $applyUser
+     * @return $this|null
      */
-    public function apply($applyUser){
+    public function apply($applyUser): ?static
+    {
         $alreadyin=false;
         foreach($this->users as $user){
             if ($applyUser->getId() == $user->getId()){
@@ -237,6 +241,11 @@ class Event implements JsonSerializable
         return $this;
     }
 
+    /**
+     * transforme les infos d'un objet en texte json
+     * @return mixed
+     *
+     */
     public function jsonSerialize(): mixed
     {
         $tool = new toolKitBQP();
@@ -255,6 +264,9 @@ class Event implements JsonSerializable
         ]);
     }
 
+    /**
+     * @return int|null Indique le nombre de places restantes. Null si aucune limite
+     */
     public function getRoom(){
         if($this->peopleMax == null){
             return null;
@@ -262,6 +274,9 @@ class Event implements JsonSerializable
         return $this->peopleMax - $this->users->count();
     }
 
+    /**
+     * @return string etat actuel calculé à partir des dates et du booléen "ispublished"
+     */
     public function getState(): string
     {
         $today=new DateTime('now');

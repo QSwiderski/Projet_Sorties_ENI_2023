@@ -6,6 +6,7 @@
 
     <h1>Créer un nouvel Utilisateur</h1>
     {{ form_start(form) }}
+    {{ form_row(form.isAdmin) }}
     {{ form_widget(form) }}
     <button>Valider</button>
     {{ form_end(form) }}
