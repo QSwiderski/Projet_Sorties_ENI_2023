@@ -25,13 +25,11 @@ class Event implements JsonSerializable
     #[ORM\Column(length: 50)]
     private ?string $name = null;
 
-    #[Assert\GreaterThan(propertyPath: "dateLimit", message: "La date de début d'événement doit être après la date limite d'inscription!")]
     #[Assert\LessThan(propertyPath: "dateFinish", message: "La date de début d'événement doit être avant la date de fin de l'événement!")]
     #[Assert\GreaterThan(new DateTime('now'), message:"La date de l'événement ne peux être antérieur à la date du jour !")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateStart = null;
 
-    #[Assert\GreaterThan(propertyPath: "dateLimit", message: "La date de fin d'événement doit être après la date limite d'inscription!")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateFinish = null;
 
@@ -42,7 +40,7 @@ class Event implements JsonSerializable
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[Assert\GreaterThanOrEqual(1, message: "Le nombre de participant ne peux être inférieur à un personne !")]
+    #[Assert\GreaterThanOrEqual(1, message: "Le nombre de participant ne peux être inférieur à une personne !")]
     #[ORM\Column(nullable: true)]
     private ?int $peopleMax = null;
 
