@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit User{% endblock %}
+{% block title %}Modifier {{ user.pseudo }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-    <h1>Modifier les infos utilisateur de {{ mail }}</h1>
+    <h1>Modifier les infos utilisateur du compte {{ mail }}</h1>
 
     {{ form_start(form) }}
     {{ form_widget(form) }}
