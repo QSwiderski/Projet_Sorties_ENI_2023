@@ -1,8 +1,8 @@
 //JS présent sur base.html.twig
 
-const allbuttons = document.querySelectorAll('button[id = glowing-btn]')
+const allbuttons = document.querySelectorAll('button[class = glowing-btn]')
 allbuttons.forEach(btn=> {
-    btn.addEventListener('mouse', playNeonSound());
+    btn.addEventListener('mouseover', playNeonSound());
 });
 
 function playNeonSound(){

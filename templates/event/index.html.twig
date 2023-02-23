@@ -35,7 +35,9 @@
                         </td>
                         <td><a href="{{ path('location_show', {'id': event.location.id}) }}">{{ event.location.name }}</a>
                             <a target="_blank"  href="https://www.google.fr/maps?q={{ event.location.latitude }},{{ event.location.longitude }}">Voir sur la carte</a>
+                            {% if app.user %}
                             <p>A vol d'oiseau : {{ event.location.distanceFrom(app.user.school) }} Km</p>
+                            {% endif %}
                         </td>
                         <td><p>{{ event.dateStart.format('d/m/Y H:i') }}</p> à <p>{{ event.dateFinish.format('d/m/Y H:i') }}</p></td>
 
