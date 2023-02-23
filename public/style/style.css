@@ -1,4 +1,8 @@
 @import url("https://fonts.googleapis.com/css?family=Raleway");
+@font-face {
+    font-family: 'dual_neon_font';
+    src: url('/public/fonts/NeonRetroDemoVersionRegular-rgPdx.otf') format('opentype');
+}
 
 .is-primary {
     background-color: var(--glow-color);
@@ -53,7 +57,7 @@ body {
     justify-content: center;
     align-items: center;
 
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, .6)), url("../images/bg.jpg");
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, .6)), url("../images/synthwavebg.jpg");
     background-size: cover;
 
 }
@@ -382,4 +386,3 @@ h1 {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#87e0fd', endColorstr='#05abe0',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 
 }
-

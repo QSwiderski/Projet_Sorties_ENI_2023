@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
@@ -19,7 +20,9 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email')
+            ->add('email', TextType::class, [
+                'label' => 'Votre E-Mail'
+            ])
             ->add('isAdmin', CheckboxType::class, [
                 'label' => 'Donner les droits administrateur',
                 'mapped' => false,
@@ -35,7 +38,7 @@ class UserType extends AbstractType
                 'options' => ['attr' => ['class' => 'password-field']],
                 'required' => true,
                 'first_options' => ['label' => 'Mot de passe'],
-                'second_options' => ['label' => 'Mot de passe de secours'],
+                'second_options' => ['label' => 'Confirmation du mot de passe'],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Merci de saisir un mot de passe',
@@ -49,10 +52,18 @@ class UserType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('pseudo')
-            ->add('name')
-            ->add('surname')
-            ->add('phone')
+            ->add('pseudo', TextType::class, [
+                'label' => 'Pseudonyme'
+            ])
+            ->add('name', TextType::class, [
+                'label' => 'Prenom'
+            ])
+            ->add('surname', TextType::class, [
+                'label' => 'Nom'
+            ])
+            ->add('phone', TextType::class, [
+                'label' => 'N° de Telephone'
+            ])
             ->add('school', EntityType::class, [
                 "class" => School::class,
                 "choice_label" => 'name']);
