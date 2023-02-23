@@ -15,7 +15,7 @@
 
     <label for="inputPassword"><strong>Mot de passe</strong></label>:
     <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-    <a class= "glowing-btn glowing-txt" href="{{ path('app_check_email') }}">Mot de passe oublié</a>
+    <a class="glowing-btn glowing-txt" href="{{ path('app_check_email') }}">Mot de passe oublié</a>
 
     <input type="hidden" name="_csrf_token"
            value="{{ csrf_token('authenticate') }}"
