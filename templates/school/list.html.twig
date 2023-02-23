@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}Liste des sites - {{ parent() }}{% endblock %}
 {% block body %}
     <div class="container">
     <h2>Gérer les sites</h2>
@@ -32,12 +32,8 @@
     </td>
 
 
+
     <br>
     <td><a class="glowing-btn glowing-txt to-left "href="{{ path('school_create') }}">Ajouter un site</a></td>
     </div>
 {% endblock %}
-
-{% block title %}
-
-{% endblock %}
-

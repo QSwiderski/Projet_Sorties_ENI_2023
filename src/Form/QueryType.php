@@ -27,12 +27,12 @@ class QueryType extends AbstractType
             ])
             ->add('dateMin', DateTimeType::class, [
                 'widget' => 'single_text',
-                'label' => 'Après..',
+                'label' => 'A partir de',
                 "required" => false
             ])
             ->add('dateMax', DateTimeType::class, [
                 'widget' => 'single_text',
-                'label' => 'Avant..',
+                'label' => 'Pas après',
                 "required" => false
             ])
             ->add('organizer', CheckboxType::class, [

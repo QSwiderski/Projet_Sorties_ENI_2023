@@ -1,19 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User index{% endblock %}
+{% block title %}Liste des utilisateurs - {{ parent() }}{% endblock %}
 
 {% block body %}
+
 <div class="container">
+<h1>Liste des utilisateurs inscrits</h1>
     <br>
-
-    <div>
-        <label for="SearchUser">Trouver un utilisateur:</label>
-        <input type="search" id="SearchUser" name="SearchUser" placeholder="Pseudo...">
-        <button class="glowing-btn glowing to-right">Rechercher</button>
+    <div class="form-container>
+        <form action={{ path('user_index') }} method="GET" name="Formulaire">
+            Recherche par nom: <input name="Research" type="text" id="Research" size="30">
+            <button class="glowing-btn glowing to-right" >Rechercher</button>
+            //TODO verifier le bon fonctionnement du bouton
+        </form>
     </div>
-
     <br>
-
         <div class="table-container">
             <table>
                 <tr>
@@ -24,7 +25,6 @@
                     <th> Actions</th>
                 </tr>
         {% for user in users %}
-
         <tr>
             <td>{{ user.surname }} {{ user.name }}</td>
             <td>{{ user.phone }}</td>

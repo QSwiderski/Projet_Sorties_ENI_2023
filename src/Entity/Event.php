@@ -25,13 +25,11 @@ class Event implements JsonSerializable
     #[ORM\Column(length: 50)]
     private ?string $name = null;
 
-    #[Assert\GreaterThan(propertyPath: "dateLimit", message: "La date de début d'événement doit être après la date limite d'inscription!")]
     #[Assert\LessThan(propertyPath: "dateFinish", message: "La date de début d'événement doit être avant la date de fin de l'événement!")]
     #[Assert\GreaterThan(new DateTime('now'), message:"La date de l'événement ne peux être antérieur à la date du jour !")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateStart = null;
 
-    #[Assert\GreaterThan(propertyPath: "dateLimit", message: "La date de fin d'événement doit être après la date limite d'inscription!")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateFinish = null;
 
@@ -42,7 +40,7 @@ class Event implements JsonSerializable
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[Assert\GreaterThanOrEqual(1, message: "Le nombre de participant ne peux être inférieur à un personne !")]
+    #[Assert\GreaterThanOrEqual(1, message: "Le nombre de participant ne peux être inférieur à une personne !")]
     #[ORM\Column(nullable: true)]
     private ?int $peopleMax = null;
 
@@ -209,7 +207,8 @@ class Event implements JsonSerializable
         return $this;
     }
 
-    private function getUsersAsArray(){
+    private function getUsersAsArray(): array
+    {
         $usersAsArray = [];
         foreach($this->users as $user){
             $usersAsArray[] = $user->getEmail();
@@ -217,10 +216,13 @@ class Event implements JsonSerializable
         return $usersAsArray;
     }
 
-    /*
+    /**
      * ajouter-retirer un utilisateur
+     * @param $applyUser
+     * @return $this|null
      */
-    public function apply($applyUser){
+    public function apply($applyUser): ?static
+    {
         $alreadyin=false;
         foreach($this->users as $user){
             if ($applyUser->getId() == $user->getId()){
@@ -237,6 +239,11 @@ class Event implements JsonSerializable
         return $this;
     }
 
+    /**
+     * transforme les infos d'un objet en texte json
+     * @return mixed
+     *
+     */
     public function jsonSerialize(): mixed
     {
         $tool = new toolKitBQP();
@@ -255,6 +262,9 @@ class Event implements JsonSerializable
         ]);
     }
 
+    /**
+     * @return int|null Indique le nombre de places restantes. Null si aucune limite
+     */
     public function getRoom(){
         if($this->peopleMax == null){
             return null;
@@ -262,6 +272,9 @@ class Event implements JsonSerializable
         return $this->peopleMax - $this->users->count();
     }
 
+    /**
+     * @return string etat actuel calculé à partir des dates et du booléen "ispublished"
+     */
     public function getState(): string
     {
         $today=new DateTime('now');
